@@ -36,7 +36,6 @@ theme.font = theme.fonts:choose("normal", 9)
 -- \___\___/_\___/_| /__/
 
 theme.colors = palette:generate_shades({
-  transparent = "#00000000",
   background = "#141414",
   foreground = "#C7CCD1",
   black = "#1f1f1f",
@@ -48,6 +47,9 @@ theme.colors = palette:generate_shades({
   cyan = "#95C7AE",
   white = "#DFE2E5",
 })
+
+-- transparent bg
+theme.colors.transparent = theme.colors.background .. '00'
 
 -- accent color
 -- TODO: Add a popup to customize this color
