@@ -1,6 +1,19 @@
+local gshape = require("gears.shape")
 local oop = require("framework.oop")
 
 local _utils = {}
+
+function _utils:srounded(fact)
+  return function(cr, w, h)
+    gshape.rounded_rect(cr, w, h, fact)
+  end
+end
+
+function _utils:prounded(fact, tl, tr, br, bl)
+  return function(cr, w, h)
+    gshape.partially_rounded_rect(cr, w, h, tl, tr, br, bl, fact)
+  end
+end
 
 function _utils:range(x, y)
   local i, ret = x, {}

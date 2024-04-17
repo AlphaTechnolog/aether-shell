@@ -1,4 +1,5 @@
 local json = require("extern.json.json")
+local gfs = require("gears.filesystem")
 local Meta = require("meta")
 local oop = require("framework.oop")
 local Fs = require("framework.fs-simple")
@@ -11,7 +12,17 @@ local DEFAULT_USER_LIKES = {
   terminal = "alacritty",
   explorer = "thunar",
   launcher = "rofi -show drun",
-  modkey = "Mod4"
+  modkey = "Mod4",
+  wallpaper = {
+    filename = gfs.get_configuration_dir() .. "/assets/wallpaper.png",
+    rounded_corners = {
+      roundness = 12,
+      top_left = true,
+      top_right = true,
+      bottom_left = false,
+      bottom_right = false
+    },
+  }
 }
 
 local DEFAULT_GENERAL_BEHAVIOR = {
