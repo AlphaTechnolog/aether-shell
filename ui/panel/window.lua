@@ -6,6 +6,8 @@ local oop = require("framework.oop")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
+local Launcher = require("ui.panel.components.launcher")
+
 local _window = {}
 
 function _window:constructor(s)
@@ -33,10 +35,39 @@ function _window:make_window()
       bg = beautiful.colors.background,
       shape = utils:prounded(12, true, true, false, false),
       {
-        widget = wibox.widget.textbox,
-        markup = "center",
-        valign = "center",
-        align = "center"
+        layout = wibox.layout.stack,
+        {
+          layout = wibox.layout.align.horizontal,
+          {
+            widget = wibox.container.margin,
+            left = dpi(13),
+            {
+              layout = wibox.layout.fixed.horizontal,
+              spacing = dpi(6),
+              Launcher():render(),
+            }
+          },
+          nil,
+          {
+            widget = wibox.container.margin,
+            right = dpi(13),
+            {
+              layout = wibox.layout.fixed.horizontal,
+              spacing = dpi(6),
+            }
+          }
+        },
+        {
+          widget = wibox.container.place,
+          valign = "center",
+          halign = "center",
+          {
+            widget = wibox.widget.textbox,
+            markup = "center",
+            valign = "center",
+            align = "center",
+          }
+        }
       }
     }
   }

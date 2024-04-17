@@ -39,6 +39,7 @@ theme.colors = palette:generate_shades({
   background = "#141414",
   foreground = "#C7CCD1",
   black = "#1f1f1f",
+  hovered_black = "#2b2b2b",
   red = "#C79595",
   green = "#AEC795",
   yellow = "#C7C795",
