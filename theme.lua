@@ -67,7 +67,7 @@ theme.fg_systray = theme.fg_normal
 -- | (_ / -_) ' \/ -_) '_/ _` | |
 -- \___\___|_||_\___|_| \__,_|_|
 
-theme.useless_gap = dpi(5)
+theme.useless_gap = dpi(0)
 theme.border_width = dpi(0)
 theme.border_color_normal = theme.colors.light_background_8
 theme.border_color_active = theme.colors.light_background_15

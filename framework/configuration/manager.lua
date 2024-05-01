@@ -99,6 +99,7 @@ end
 function _manager:make_parsing_functions_shortcuts()
   for name, content in pairs(self.files) do
     self["parse_" .. name] = function (self)
+      print(content.filename)
       return self:parse(content.filename)
     end
   end

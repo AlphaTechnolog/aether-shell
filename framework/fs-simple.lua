@@ -67,7 +67,7 @@ function _fs:read(path)
     error("cannot open " .. path)
   end
 
-  local content = file:read("a")
+  local content = file:read("*a")
 
   file:close()
 
