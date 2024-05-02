@@ -78,4 +78,13 @@ function _utils:truncate_text(text, max_length)
     return truncated_text
 end
 
+-- https://stackoverflow.com/questions/72783502/how-does-one-reverse-the-items-in-a-table-in-lua
+function _utils:reverse(tab)
+    for i = 1, math.floor(#tab/2), 1 do
+        tab[i], tab[#tab-i+1] = tab[#tab-i+1], tab[i]
+    end
+
+    return tab
+end
+
 return oop(_utils)

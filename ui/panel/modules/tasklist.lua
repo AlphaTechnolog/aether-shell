@@ -1,13 +1,14 @@
-local wibox = require("wibox")
-local gtimer = require("gears.timer")
+local wibox      = require("wibox")
+local gtimer     = require("gears.timer")
+local animation  = require("framework.animation")
 local icon_theme = require("framework.icon-theme")()
-local utils = require("framework.utils")
-local oop = require("framework.oop")
-local beautiful = require("beautiful")
-local color = require("framework.color")
-local dpi = beautiful.xresources.apply_dpi
+local utils      = require("framework.utils")
+local oop        = require("framework.oop")
+local color      = require("framework.color")
+local beautiful  = require("beautiful")
+local dpi        = beautiful.xresources.apply_dpi
 
-local tasklist  = {}
+local tasklist   = {}
 
 function tasklist:constructor(s)
     self.s = s
@@ -20,13 +21,14 @@ function tasklist:get_clients()
         return nil
     end
 
-    return tag:clients()
+    return utils:reverse(tag:clients())
 end
 
 local function TaskListItem(client_instance)
     local light_background = color.lighten(beautiful.colors.background, 12)
 
     local computed_widget = wibox.widget({
+        id = "background-element",
         widget = wibox.container.background,
         bg = light_background,
         fg = beautiful.colors.foreground,
@@ -56,6 +58,53 @@ local function TaskListItem(client_instance)
         }
     })
 
+    local function get_background(is_active)
+        return is_active and beautiful.colors.blue or light_background
+    end
+
+    local function get_foreground(is_active)
+        return is_active and beautiful.colors.background or beautiful.colors.foreground
+    end
+
+    local color_animation = animation:new({
+        duration = 0.25,
+        easing = animation.easing.inOutQuad,
+        pos = {
+            background = color.hex_to_rgba(get_background(client_instance.active)),
+            foreground = color.hex_to_rgba(get_foreground(client_instance.active))
+        },
+        update = function(_, pos)
+            if pos.background then
+                computed_widget.bg = color.rgba_to_hex(pos.background)
+            end
+            if pos.foreground then
+                computed_widget.fg = color.rgba_to_hex(pos.foreground)
+            end
+        end
+    })
+
+    function color_animation:set_state(new_state)
+        self:set({
+            background = color.hex_to_rgba(new_state.background),
+            foreground = color.hex_to_rgba(new_state.foreground)
+        })
+    end
+
+    computed_widget:add_button(utils:left_click(function ()
+        if client_instance.active then
+            gtimer.delayed_call(function ()
+                -- this toggle will never happen though, the else will be dispatched instead.
+                client_instance.minimized = not client_instance.minimized
+            end)
+        else
+            client_instance:activate({
+                switch_to_tag = false, -- it should be already in the current tag lol
+                raise = true,
+                context = "dock"
+            })
+        end
+    end))
+
     local function subscribe_key(key, id, update)
         local element = computed_widget:get_children_by_id(id)[1]
 
@@ -64,20 +113,28 @@ local function TaskListItem(client_instance)
         end
 
         -- first update call, even before subscribing
-        gtimer.delayed_call(function ()
+        gtimer.delayed_call(function()
             if update then
                 update(element, client_instance[key])
             end
         end)
 
-        client_instance:connect_signal("property::" .. key, function (obj)
+        client_instance:connect_signal("property::" .. key, function(obj)
             if not obj then return end
             if update then update(element, obj[key]) end
         end)
     end
 
-    subscribe_key("name", "name-element", function (element, name)
+    subscribe_key("name", "name-element", function(element, name)
         element:set_markup_silently(utils:truncate_text(name, 40))
+    end)
+
+    -- using the background element since we dont really need a specific element
+    subscribe_key("active", "background-element", function (_, is_active)
+        color_animation:set_state({
+            background = get_background(is_active),
+            foreground = get_foreground(is_active),
+        })
     end)
 
     return computed_widget
