@@ -1,5 +1,7 @@
+local awful = require("awful")
 local gshape = require("gears.shape")
 local oop = require("framework.oop")
+local dpi = require("beautiful.xresources").apply_dpi
 
 local _utils = {}
 
@@ -24,6 +26,15 @@ function _utils:range(x, y)
   return ret
 end
 
+function _utils:xmargins(t, b, l, r)
+  return {
+    top = dpi(t),
+    bottom = dpi(b),
+    left = dpi(l),
+    right = dpi(r)
+  }
+end
+
 function _utils:mapped_range(x, y, mapper)
   local orig = self:range(x, y)
   local ret = {}
@@ -33,6 +44,12 @@ function _utils:mapped_range(x, y, mapper)
   end
 
   return ret
+end
+
+function _utils:left_click(cb)
+  return awful.button({}, 1, function ()
+    if cb then cb() end
+  end)
 end
 
 function _utils:key_in_tbl(key, tbl)

@@ -19,7 +19,7 @@ local theme = {}
 -- |_|\___/_||_\__/__/
 
 theme.fonts = {
-  normal = "Inter ",
+  normal = "Roboto ",
   icons = "Material Symbols Rounded ",
   nerdfonts = "Iosevka Nerd Font ",
 }
@@ -36,16 +36,16 @@ theme.font = theme.fonts:choose("normal", 9)
 -- \___\___/_\___/_| /__/
 
 theme.colors = palette:generate_shades({
-  background = "#141414",
+  background = "#161617",
   foreground = "#C7CCD1",
-  black = "#1f1f1f",
-  hovered_black = "#2b2b2b",
-  red = "#C79595",
-  green = "#AEC795",
+  black = "#202023",
+  hovered_black = "#2c2c30",
+  red = "#c795ae",
+  green = "#95C7AE",
   yellow = "#C7C795",
   blue = "#95AEC7",
   magenta = "#AE95C7",
-  cyan = "#95C7AE",
+  cyan = "#a6bbd0",
   white = "#DFE2E5",
 })
 
@@ -67,7 +67,7 @@ theme.fg_systray = theme.fg_normal
 -- | (_ / -_) ' \/ -_) '_/ _` | |
 -- \___\___|_||_\___|_| \__,_|_|
 
-theme.useless_gap = dpi(0)
+theme.useless_gap = dpi(4)
 theme.border_width = dpi(0)
 theme.border_color_normal = theme.colors.light_background_8
 theme.border_color_active = theme.colors.light_background_15
