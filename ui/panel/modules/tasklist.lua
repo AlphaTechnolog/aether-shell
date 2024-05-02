@@ -90,9 +90,9 @@ local function TaskListItem(client_instance)
         })
     end
 
-    computed_widget:add_button(utils:left_click(function ()
+    computed_widget:add_button(utils:left_click(function()
         if client_instance.active then
-            gtimer.delayed_call(function ()
+            gtimer.delayed_call(function()
                 -- this toggle will never happen though, the else will be dispatched instead.
                 client_instance.minimized = not client_instance.minimized
             end)
@@ -130,7 +130,7 @@ local function TaskListItem(client_instance)
     end)
 
     -- using the background element since we dont really need a specific element
-    subscribe_key("active", "background-element", function (_, is_active)
+    subscribe_key("active", "background-element", function(_, is_active)
         color_animation:set_state({
             background = get_background(is_active),
             foreground = get_foreground(is_active),
