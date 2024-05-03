@@ -7,6 +7,7 @@ local animation = require("framework.animation")
 local color = require("framework.color")
 local oop = require("framework.oop")
 local utils = require("framework.utils")()
+local icon_theme = require("framework.icon-theme")()
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -47,7 +48,9 @@ end
 local function mktaglist(s)
     return awful.widget.taglist {
         screen = s,
-        filter = awful.widget.taglist.filter.all,
+        filter = function (t)
+            return #t:clients() > 0 or t.selected
+        end,
         layout = {
             layout = wibox.layout.fixed.horizontal,
             spacing = dpi(6)
@@ -66,29 +69,39 @@ local function mktaglist(s)
                         widget = wibox.container.background,
                         {
                             widget = wibox.container.margin,
-                            margins = utils:xmargins(0, 0, 4, 4),
+                            margins = utils:xmargins(0, 0, 6, 6),
                             {
-                                id = "text-element",
-                                widget = wibox.widget.textbox,
-                                halign = "center",
+                                widget = wibox.container.place,
                                 valign = "center",
+                                halign = "center",
+                                {
+                                    id = "clients-layout-element",
+                                    layout = wibox.layout.fixed.horizontal,
+                                    hexpand = true,
+                                    spacing = dpi(6),
+                                }
                             }
                         }
                     },
                     {
-                        id = "indicator-element",
-                        widget = wibox.container.background,
-                        bg = beautiful.colors.blue,
-                        shape = gshape.rounded_bar,
-                        forced_height = 3,
-                        forced_width = 16,
+                        widget = wibox.container.place,
+                        valign = "center",
+                        halign = "center",
+                        {
+                            id = "indicator-element",
+                            widget = wibox.container.background,
+                            bg = beautiful.colors.blue,
+                            shape = gshape.rounded_bar,
+                            forced_height = dpi(3),
+                            forced_width = dpi(15)
+                        }
                     }
                 },
             },
             create_callback = function (self, tag)
                 local background = self:get_children_by_id("background-element")[1]
-                local text = self:get_children_by_id("text-element")[1]
                 local indicator = self:get_children_by_id("indicator-element")[1]
+                local clients_layout = self:get_children_by_id("clients-layout-element")[1]
 
                 background:add_button(utils:left_click(function()
                     gtimer.delayed_call(function ()
@@ -102,6 +115,7 @@ local function mktaglist(s)
                     pos = {
                         background = color.hex_to_rgba(beautiful.colors.background),
                         indicator = color.hex_to_rgba(beautiful.colors.background),
+                        indicator_width = 15
                     },
                     update = function (_, pos)
                         if pos.background then
@@ -110,6 +124,9 @@ local function mktaglist(s)
                         if pos.indicator then
                             indicator.bg = color.rgba_to_hex(pos.indicator)
                         end
+                        if pos.indicator_width then
+                            indicator.forced_width = dpi(pos.indicator_width)
+                        end
                     end
                 }
 
@@ -117,26 +134,57 @@ local function mktaglist(s)
                     self:set({
                         background = color.hex_to_rgba(new_state.background),
                         indicator = color.hex_to_rgba(new_state.indicator),
+                        indicator_width = new_state.indicator_width
                     })
                 end
 
+                function self:update_clients_layout()
+                    if not clients_layout then
+                        print("[warning] cannot update clients layout in taglist for index " .. tag.index)
+                        return
+                    end
+
+                    local clients = utils:reverse(tag:clients())
+
+                    clients_layout:reset()
+
+                    if not clients or #clients == 0 then
+                        return clients_layout:add(wibox.widget({
+                            widget = wibox.widget.textbox,
+                            markup = tostring(tag.index),
+                            valign = "center",
+                            align = "center"
+                        }))
+                    end
+
+                    for _, client in ipairs(clients) do
+                        clients_layout:add(wibox.widget({
+                            widget = wibox.widget.imagebox,
+                            valign = "center",
+                            halign = "center",
+                            forced_width = dpi(16),
+                            forced_height = dpi(16),
+                            image = icon_theme:get_client_icon_path(client)
+                        }))
+                    end
+                end
+
                 function self:update()
-                    if tag.selected or #tag:clients() > 0 then
+                    if tag.selected then
                         colors_anim:set_state({
                             background = color.lighten(beautiful.colors.background),
-                            indicator = tag.selected
-                                and beautiful.colors.blue
-                                or color.lighten(beautiful.colors.background, 60)
+                            indicator = beautiful.colors.blue,
+                            indicator_width = 25,
                         })
                     else
                         colors_anim:set_state({
                             background = color.lighten(beautiful.colors.background, 12),
-                            indicator = color.lighten(beautiful.colors.background, 25)
+                            indicator_width = 15,
+                            indicator = color.lighten(beautiful.colors.background, 60),
                         })
                     end
 
-                    local roman_numbers = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"}
-                    text:set_markup_silently(tostring(roman_numbers[tag.index]))
+                    self:update_clients_layout()
                 end
 
                 gtimer.delayed_call(function ()
