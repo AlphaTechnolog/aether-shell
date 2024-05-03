@@ -194,6 +194,7 @@ function tasklist:render()
     callback_update()
 
     Client.connect_signal("list", callback_update)
+    Client.connect_signal("tagged", callback_update)
     Tag.connect_signal("property::selected", callback_update)
 
     return container

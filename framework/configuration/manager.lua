@@ -3,7 +3,7 @@ local gfs = require("gears.filesystem")
 local Meta = require("meta")
 local oop = require("framework.oop")
 local Fs = require("framework.fs-simple")
-local utils = require("framework.utils")() 
+local utils = require("framework.utils")()
 
 local _manager = {}
 
@@ -19,8 +19,8 @@ local DEFAULT_USER_LIKES = {
       roundness = 12,
       top_left = true,
       top_right = true,
-      bottom_left = false,
-      bottom_right = false
+      bottom_left = true,
+      bottom_right = true
     },
   }
 }
