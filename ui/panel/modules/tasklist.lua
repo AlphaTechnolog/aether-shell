@@ -8,10 +8,14 @@ local color      = require("framework.color")
 local beautiful  = require("beautiful")
 local dpi        = beautiful.xresources.apply_dpi
 
-local tasklist   = {}
+local tasklist   = {
+    s = nil
+}
 
 function tasklist:constructor(s)
-    self.s = s
+    if not self.s then
+        self.s = s
+    end
 end
 
 function tasklist:get_clients()

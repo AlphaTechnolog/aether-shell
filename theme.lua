@@ -1,8 +1,8 @@
---  ___                     _
--- |_ _|_ __  _ __  ___ _ _| |_ ___
---  | || '  \| '_ \/ _ \ '_|  _(_-<
--- |___|_|_|_| .__/\___/_|  \__/__/
---           |_|
+--    ___                                         _
+-- |_ _|_ __    _ __    ___ _ _| |_ ___
+--    | || '    \| '_ \/ _ \ '_|    _(_-<
+-- |___|_|_|_| .__/\___/_|    \__/__/
+--                     |_|
 
 local xresources = require "beautiful.xresources"
 local gfs = require "gears.filesystem"
@@ -13,40 +13,40 @@ local themes_path = gfs.get_themes_dir()
 
 local theme = {}
 
---  ___        _
+--    ___                _
 -- | __|__ _ _| |_ ___
--- | _/ _ \ ' \  _(_-<
+-- | _/ _ \ ' \    _(_-<
 -- |_|\___/_||_\__/__/
 
 theme.fonts = {
-  normal = "Roboto ",
-  icons = "Material Symbols Rounded ",
-  nerdfonts = "Iosevka Nerd Font ",
+    normal = "Roboto ",
+    icons = "Material Symbols Rounded ",
+    nerdfonts = "Iosevka Nerd Font ",
 }
 
 function theme.fonts:choose(family, size)
-  return self[family] .. tostring(size)
+    return self[family] .. tostring(size)
 end
 
 theme.font = theme.fonts:choose("normal", 9)
 
---  ___     _
+--    ___         _
 -- / __|___| |___ _ _ ___
 -- | (__/ _ \ / _ \ '_(_-<
 -- \___\___/_\___/_| /__/
 
 theme.colors = palette:generate_shades({
-  background = "#161617",
-  foreground = "#C7CCD1",
-  black = "#202023",
-  hovered_black = "#2c2c30",
-  red = "#c795ae",
-  green = "#95C7AE",
-  yellow = "#C7C795",
-  blue = "#95AEC7",
-  magenta = "#AE95C7",
-  cyan = "#a6bbd0",
-  white = "#DFE2E5",
+    background = "#161617",
+    foreground = "#C7CCD1",
+    black = "#202023",
+    hovered_black = "#2c2c30",
+    red = "#c795ae",
+    green = "#95C7AE",
+    yellow = "#C7C795",
+    blue = "#95AEC7",
+    magenta = "#AE95C7",
+    cyan = "#a6bbd0",
+    white = "#DFE2E5",
 })
 
 -- transparent bg
@@ -62,8 +62,8 @@ theme.fg_normal = theme.colors.foreground
 theme.bg_systray = theme.bg_normal
 theme.fg_systray = theme.fg_normal
 
---  ___                       _
--- / __|___ _ _  ___ _ _ __ _| |
+--    ___                                             _
+-- / __|___ _ _    ___ _ _ __ _| |
 -- | (_ / -_) ' \/ -_) '_/ _` | |
 -- \___\___|_||_\___|_| \__,_|_|
 
@@ -76,11 +76,11 @@ theme.menu_height = dpi(15)
 theme.menu_width = dpi(100)
 theme.icon_theme = "Papirus-Dark"
 
---  _                       _
--- | |   __ _ _  _ ___ _  _| |_
--- | |__/ _` | || / _ \ || |  _|
+--    _                                             _
+-- | |     __ _ _    _ ___ _    _| |_
+-- | |__/ _` | || / _ \ || |    _|
 -- |____\__,_|\_, \___/\_,_|\__|
---            |__/
+--                        |__/
 
 theme.layout_fairh = themes_path .. "default/layouts/fairhw.png"
 theme.layout_fairv = themes_path .. "default/layouts/fairvw.png"
