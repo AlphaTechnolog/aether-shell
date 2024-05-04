@@ -33,17 +33,20 @@ local function clock()
 	}
 
 	local icon = wibox.widget({
-		widget = wibox.widget.textbox,
-		markup = "",
-		font = beautiful.fonts:choose("icons", 10),
-		valign = "center",
-		align = "center",
+		widget = wibox.container.background,
+		fg = beautiful.colors.accent,
+		{
+			widget = wibox.widget.textbox,
+			markup = "",
+			font = beautiful.fonts:choose("icons", 10),
+			valign = "center",
+			align = "center",
+		}
 	})
 
     return wibox.widget({
 		widget = wibox.container.background,
-		bg = beautiful.colors.green,
-		fg = beautiful.colors.background,
+		bg = color.lighten(beautiful.colors.background, 12),
 		shape = utils:srounded(dpi(7)),
 		{
 			widget = wibox.container.margin,
@@ -60,21 +63,16 @@ end
 
 local function layoutbox(self)
 	return wibox.widget({
-		widget = wibox.container.background,
-		bg = color.lighten(beautiful.colors.background, 12),
-		shape = utils:srounded(dpi(7)),
+		widget = wibox.container.margin,
+		margins = dpi(4),
 		{
-			widget = wibox.container.margin,
-			margins = dpi(6),
-			{
-				widget = awful.widget.layoutbox,
-				screen = self.s,
-				buttons = {
-					awful.button({}, 1, function() awful.layout.inc(1) end),
-					awful.button({}, 3, function() awful.layout.inc(-1) end),
-					awful.button({}, 4, function() awful.layout.inc(1) end),
-					awful.button({}, 5, function() awful.layout.inc(-1) end),
-				}
+			widget = awful.widget.layoutbox,
+			screen = self.s,
+			buttons = {
+				awful.button({}, 1, function() awful.layout.inc(1) end),
+				awful.button({}, 3, function() awful.layout.inc(-1) end),
+				awful.button({}, 4, function() awful.layout.inc(1) end),
+				awful.button({}, 5, function() awful.layout.inc(-1) end),
 			}
 		}
 	})
@@ -82,14 +80,9 @@ end
 
 local function contained(children)
     return wibox.widget({
-        widget = wibox.container.background,
-        bg = beautiful.colors.background,
-        shape = utils:srounded(6),
-        {
-            widget = wibox.container.margin,
-            margins = dpi(7),
-            children
-        }
+		widget = wibox.container.margin,
+		margins = dpi(7),
+		children
     })
 end
 

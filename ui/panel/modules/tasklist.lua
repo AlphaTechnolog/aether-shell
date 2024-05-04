@@ -29,12 +29,11 @@ function tasklist:get_clients()
 end
 
 local function TaskListItem(client_instance)
-    local light_background = color.lighten(beautiful.colors.background, 12)
+    local light_background = color.lighten(beautiful.colors.background, 6)
 
     local computed_widget = wibox.widget({
         id = "background-element",
         widget = wibox.container.background,
-        bg = light_background,
         fg = beautiful.colors.foreground,
         shape = utils:srounded(dpi(7)),
         {
@@ -53,7 +52,7 @@ local function TaskListItem(client_instance)
                 },
                 {
                     id = "name-element",
-                    markup = utils:truncate_text(client_instance.name, 40),
+                    markup = client_instance.active and utils:truncate_text(client_instance.name, 40) or "",
                     widget = wibox.widget.textbox,
                     valign = "center",
                     align = "center"
@@ -63,11 +62,7 @@ local function TaskListItem(client_instance)
     })
 
     local function get_background(is_active)
-        return is_active and beautiful.colors.blue or light_background
-    end
-
-    local function get_foreground(is_active)
-        return is_active and beautiful.colors.background or beautiful.colors.foreground
+        return is_active and color.lighten(light_background, 4) or light_background
     end
 
     local color_animation = animation:new({
@@ -75,14 +70,10 @@ local function TaskListItem(client_instance)
         easing = animation.easing.inOutQuad,
         pos = {
             background = color.hex_to_rgba(get_background(client_instance.active)),
-            foreground = color.hex_to_rgba(get_foreground(client_instance.active))
         },
         update = function(_, pos)
             if pos.background then
                 computed_widget.bg = color.rgba_to_hex(pos.background)
-            end
-            if pos.foreground then
-                computed_widget.fg = color.rgba_to_hex(pos.foreground)
             end
         end
     })
@@ -90,7 +81,6 @@ local function TaskListItem(client_instance)
     function color_animation:set_state(new_state)
         self:set({
             background = color.hex_to_rgba(new_state.background),
-            foreground = color.hex_to_rgba(new_state.foreground)
         })
     end
 
@@ -117,11 +107,9 @@ local function TaskListItem(client_instance)
         end
 
         -- first update call, even before subscribing
-        gtimer.delayed_call(function()
-            if update then
-                update(element, client_instance[key])
-            end
-        end)
+        if update then
+            update(element, client_instance[key])
+        end
 
         client_instance:connect_signal("property::" .. key, function(obj)
             if not obj then return end
@@ -129,22 +117,23 @@ local function TaskListItem(client_instance)
         end)
     end
 
-    subscribe_key("name", "name-element", function(element, name)
-        element:set_markup_silently(utils:truncate_text(name, 40))
-    end)
+    local function update_name_text(element, name)
+        element:set_markup_silently(client_instance.active and utils:truncate_text(name, 40) or "")
+    end
 
-    -- using the background element since we dont really need a specific element
-    subscribe_key("active", "background-element", function(_, is_active)
+    subscribe_key("name", "name-element", update_name_text)
+
+    subscribe_key("active", "name-element", function(element, is_active)
+        update_name_text(element, client_instance.name)
         color_animation:set_state({
             background = get_background(is_active),
-            foreground = get_foreground(is_active),
         })
     end)
 
     return computed_widget
 end
 
-local function update(self, container, layout)
+local function update(self, layout)
     layout:reset()
 
     local clients = self:get_clients()
@@ -154,11 +143,8 @@ local function update(self, container, layout)
     end
 
     if #clients == 0 then
-        container.bg = beautiful.colors.transparent
         return
     end
-
-    container.bg = beautiful.colors.background
 
     for _, c in ipairs(clients) do
         layout:add(TaskListItem(c))
@@ -170,20 +156,15 @@ function tasklist:render()
     layout.spacing = dpi(6)
 
     local container = wibox.widget({
-        widget = wibox.container.background,
-        bg = beautiful.colors.background,
-        shape = utils:srounded(dpi(7)),
-        {
-            id = "margin-element",
-            widget = wibox.container.margin,
-            margins = dpi(6),
-            layout,
-        }
+        id = "margin-element",
+        widget = wibox.container.margin,
+        margins = dpi(6),
+        layout,
     })
 
     local function delayed_update()
         gtimer.delayed_call(function()
-            update(self, container, layout)
+            update(self, layout)
         end)
     end
 

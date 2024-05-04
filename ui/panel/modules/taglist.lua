@@ -90,7 +90,7 @@ local function mktaglist(s)
                         {
                             id = "indicator-element",
                             widget = wibox.container.background,
-                            bg = beautiful.colors.blue,
+                            bg = beautiful.colors.accent,
                             shape = gshape.rounded_bar,
                             forced_height = dpi(3),
                             forced_width = dpi(15)
@@ -164,7 +164,7 @@ local function mktaglist(s)
                             halign = "center",
                             forced_width = dpi(16),
                             forced_height = dpi(16),
-                            image = icon_theme:get_client_icon_path(client)
+                            image = icon_theme:get_client_icon_path(client) or client.icon
                         }))
                     end
                 end
@@ -208,18 +208,13 @@ end
 
 function taglist:render()
     return wibox.widget({
-        widget = wibox.container.background,
-        bg = beautiful.colors.background,
-        shape = utils:srounded(dpi(7)),
+        widget = wibox.container.margin,
+        margins = dpi(6),
         {
-            widget = wibox.container.margin,
-            margins = dpi(6),
-            {
-                layout = wibox.layout.fixed.horizontal,
-                spacing = dpi(6),
-                launcher(),
-                mktaglist(self.s),
-            }
+            layout = wibox.layout.fixed.horizontal,
+            spacing = dpi(6),
+            launcher(),
+            mktaglist(self.s),
         }
     })
 end

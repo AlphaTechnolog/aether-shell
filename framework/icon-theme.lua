@@ -70,14 +70,62 @@ local function get_icon_by_class(self, client, apps)
     end
 end
 
+local function get_cached_icon(self, client)
+    local icons_cache = Configuration.IconsCache
+
+    if not icons_cache then
+        print("[warning] for some unknown reason, icons cache wouldn't be loaded")
+        return nil
+    end
+
+    local icons = icons_cache.icons
+
+    if not icons then
+        print("[error] cannot fetch icons")
+        return
+    end
+
+    for classname, iconpath in pairs(icons) do
+        if client.class == classname then
+            print("cached icon path " .. iconpath)
+            return iconpath
+        end
+    end
+
+    return nil
+end
+
+local function register_cached_icon(classname, iconpath)
+    Configuration.IconsCache.icons[classname] = iconpath
+
+    local ok, err = pcall(function ()
+        Configuration.IconsCache.icons = Configuration.IconsCache:refresh_content().icons
+    end)
+
+    if not ok then
+        print("[error] unable to update icons when trying to add " .. classname .. " to icons cache! " .. tostring(err))
+        return
+    end
+end
+
 function icon_theme:get_client_icon_path(client)
+    local cached_icon = get_cached_icon(self, client)
+
+    if cached_icon then
+        return cached_icon
+    end
+
     local apps = Gio.AppInfo.get_all()
 
-    return  get_icon_by_pid_command(self, client, apps) or
-            get_icon_by_icon_name(self, client, apps) or
-            get_icon_by_class(self, client, apps) or
-            client.icon or
-            self:choose_icon({"window", "window-manager", "xfwm4-default", "window_list" })
+    local resolved_icon = get_icon_by_pid_command(self, client, apps) or
+                          get_icon_by_icon_name(self, client, apps) or
+                          get_icon_by_class(self, client, apps) or
+                          client.icon or
+                          self:choose_icon({"window", "window-manager", "xfwm4-default", "window_list" })
+
+    register_cached_icon(client.class, resolved_icon)
+
+    return resolved_icon
 end
 
 function icon_theme:choose_icon(icons_names)

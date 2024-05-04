@@ -1,5 +1,6 @@
 local wibox = require("wibox")
 local awful = require("awful")
+local utils = require("framework.utils")()
 local oop = require("framework.oop")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
@@ -23,31 +24,35 @@ function _window:make_window()
         visible = false,
         bg = beautiful.colors.transparent,
         fg = beautiful.colors.foreground,
-        x = self.s.geometry.x + (beautiful.useless_gap * 2),
-        y = self.s.geometry.y + (beautiful.useless_gap * 2),
-        minimum_width = self.s.geometry.width - (beautiful.useless_gap * 4),
+        x = self.s.geometry.x,
+        y = self.s.geometry.y,
+        minimum_width = self.s.geometry.width,
         maximum_width = self.s.geometry.width,
         minimum_height = height,
         maximum_height = height,
         widget = wibox.widget {
-            layout = wibox.layout.stack,
+            widget = wibox.container.background,
+            bg = beautiful.colors.background,
             {
-                layout = wibox.layout.align.horizontal,
-                Taglist(self.s):render(),
-                nil,
-                Statusbar(self.s):render()
-            },
-            {
-                widget = wibox.container.place,
-                halign = "center",
-                valign = "center",
-                Tasklist(self.s):render(),
+                layout = wibox.layout.stack,
+                {
+                    layout = wibox.layout.align.horizontal,
+                    Taglist(self.s):render(),
+                    nil,
+                    Statusbar(self.s):render()
+                },
+                {
+                    widget = wibox.container.place,
+                    halign = "center",
+                    valign = "center",
+                    Tasklist(self.s):render(),
+                }
             }
         }
     }
 
     self.popup:struts {
-        top = height + beautiful.useless_gap * 2
+        top = height
     }
 end
 
