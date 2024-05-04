@@ -164,7 +164,7 @@ local function mktaglist(s)
                             halign = "center",
                             forced_width = dpi(16),
                             forced_height = dpi(16),
-                            image = icon_theme:get_client_icon_path(client) or client.icon
+                            image = icon_theme:get_client_icon_path(client)
                         }))
                     end
                 end
