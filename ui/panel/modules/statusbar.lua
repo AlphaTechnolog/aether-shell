@@ -1,11 +1,13 @@
 local wibox = require("wibox")
 local awful = require("awful")
 local gtimer = require("gears.timer")
-local color = require("framework.color")
 local oop = require("framework.oop")
 local utils = require("framework.utils")()
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
+
+local Network = require("ui.panel.modules.icons.network")
+local Volume = require("ui.panel.modules.icons.volume")
 
 local statusbar = {
     s = nil
@@ -46,7 +48,7 @@ local function clock()
 
     return wibox.widget({
 		widget = wibox.container.background,
-		bg = color.lighten(beautiful.colors.background, 12),
+		bg = beautiful.colors.accent_shade,
 		shape = utils:srounded(dpi(7)),
 		{
 			widget = wibox.container.margin,
@@ -90,6 +92,16 @@ function statusbar:render()
     return contained(wibox.widget({
 		layout = wibox.layout.fixed.horizontal,
 		spacing = dpi(6),
+		{
+			widget = wibox.container.margin,
+			right = dpi(6),
+			{
+				layout = wibox.layout.fixed.horizontal,
+				spacing = dpi(8),
+				Network():render(),
+				Volume():render(),
+			}
+		},
 		clock(),
 		layoutbox(self)
     }))

@@ -54,7 +54,17 @@ theme.colors.transparent = theme.colors.background .. '00'
 
 -- accent color
 -- TODO: Add a popup to customize this color
-theme.colors.accent = theme.colors.blue
+local function make_color_shades(key)
+    theme.colors[key .. "_shade"] = theme.colors[key] .. '1A' -- 10%
+    theme.colors["light_" .. key .. "_shade"] = theme.colors[key] .. '33' -- 20%
+end
+
+theme.colors.accent = theme.colors.red
+theme.colors.secondary_accent = theme.colors.magenta
+
+for _, key in ipairs { 'accent', 'secondary_accent' } do
+    make_color_shades(key)
+end
 
 theme.bg_normal = theme.colors.background
 theme.fg_normal = theme.colors.foreground
@@ -69,9 +79,9 @@ theme.fg_systray = theme.fg_normal
 
 theme.useless_gap = dpi(4)
 theme.border_width = dpi(0)
-theme.border_color_normal = theme.colors.light_background_8
-theme.border_color_active = theme.colors.light_background_15
-theme.border_color_marked = theme.colors.light_background_8
+-- theme.border_color_normal = theme.colors.light_hovered_black_15
+-- theme.border_color_active = theme.colors.light_hovered_black_15
+-- theme.border_color_marked = theme.colors.light_hovered_black_15
 theme.menu_height = dpi(15)
 theme.menu_width = dpi(100)
 theme.icon_theme = "Papirus-Dark"

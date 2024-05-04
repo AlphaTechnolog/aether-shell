@@ -6,7 +6,6 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
 local Taglist = require("ui.panel.modules.taglist")
-local Tasklist = require("ui.panel.modules.tasklist")
 local Statusbar = require("ui.panel.modules.statusbar")
 
 local _window = {}
@@ -36,16 +35,16 @@ function _window:make_window()
             {
                 layout = wibox.layout.stack,
                 {
-                    layout = wibox.layout.align.horizontal,
-                    Taglist(self.s):render(),
-                    nil,
+                    widget = wibox.container.place,
+                    valign = 'center',
+                    halign = 'right',
                     Statusbar(self.s):render()
                 },
                 {
                     widget = wibox.container.place,
                     halign = "center",
                     valign = "center",
-                    Tasklist(self.s):render(),
+                    Taglist(self.s):render(),
                 }
             }
         }

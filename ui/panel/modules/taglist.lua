@@ -16,24 +16,24 @@ local taglist = {}
 local function launcher()
     local container = hoverable(wibox.widget({
         widget = wibox.container.background,
-        bg = beautiful.colors.white,
-        fg = beautiful.colors.black,
+        fg = beautiful.colors.accent,
+        bg = beautiful.colors.accent_shade,
         shape = utils:srounded(dpi(7)),
         {
             widget = wibox.container.margin,
-            margins = utils:xmargins(4, 4, 6, 6),
+            margins = utils:xmargins(4, 4, 7, 7),
             {
                 widget = wibox.widget.textbox,
                 font = beautiful.fonts:choose("icons", 12),
-                markup = ""
+                markup = ""
             }
         }
     }))
 
     container:setup_hover({
         colors = {
-            normal = beautiful.colors.white,
-            hovered = color.darken(beautiful.colors.white, 64),
+            normal = beautiful.colors.accent_shade,
+            hovered = beautiful.colors.light_accent_shade,
         }
     })
 
@@ -113,7 +113,7 @@ local function mktaglist(s)
                     duration = 0.25,
                     easing = animation.easing.inOutQuad,
                     pos = {
-                        background = color.hex_to_rgba(beautiful.colors.background),
+                        background = color.hex_to_rgba(beautiful.colors.accent_shade),
                         indicator = color.hex_to_rgba(beautiful.colors.background),
                         indicator_width = 15
                     },
@@ -149,9 +149,10 @@ local function mktaglist(s)
                     clients_layout:reset()
 
                     if not clients or #clients == 0 then
+                        local numbers = {"I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX"}
                         return clients_layout:add(wibox.widget({
                             widget = wibox.widget.textbox,
-                            markup = tostring(tag.index),
+                            markup = numbers[tag.index],
                             valign = "center",
                             align = "center"
                         }))
@@ -172,15 +173,15 @@ local function mktaglist(s)
                 function self:update()
                     if tag.selected then
                         colors_anim:set_state({
-                            background = color.lighten(beautiful.colors.background),
-                            indicator = beautiful.colors.blue,
+                            background = beautiful.colors.light_accent_shade,
                             indicator_width = 25,
+                            indicator = beautiful.colors.accent,
                         })
                     else
                         colors_anim:set_state({
-                            background = color.lighten(beautiful.colors.background, 12),
+                            background = beautiful.colors.accent_shade,
                             indicator_width = 15,
-                            indicator = color.lighten(beautiful.colors.background, 60),
+                            indicator = beautiful.colors.light_accent_shade,
                         })
                     end
 
