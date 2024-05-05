@@ -59,8 +59,8 @@ local function make_color_shades(key)
     theme.colors["light_" .. key .. "_shade"] = theme.colors[key] .. '33' -- 20%
 end
 
-theme.colors.accent = theme.colors.red
-theme.colors.secondary_accent = theme.colors.magenta
+theme.colors.accent = theme.colors.blue
+theme.colors.secondary_accent = theme.colors.cyan
 
 for _, key in ipairs { 'accent', 'secondary_accent' } do
     make_color_shades(key)

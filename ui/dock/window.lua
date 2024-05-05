@@ -159,7 +159,7 @@ local function should_hide_panel(self)
 
     local is_floating = client.floating or awful.layout.get(self.s) == awful.layout.suit.floating
     
-    if not is_floating then
+    if not is_floating or client.maximized then
         return true
     end
 
