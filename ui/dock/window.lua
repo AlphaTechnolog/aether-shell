@@ -9,8 +9,16 @@ local dpi = beautiful.xresources.apply_dpi
 
 local window = {}
 
+local WINDOW_STATUS = {
+    HIDDING = 'HIDDING',
+    SHOWING = 'SHOWING',
+    IDLE = 'IDLE',
+}
+
 function window:constructor(s)
     self.s = s
+    self.forced_opened = false
+    self.status = WINDOW_STATUS.IDLE
     self:make_widget()
 end
 
@@ -20,6 +28,38 @@ local function geometry()
         width = dpi(250),
         height = dpi(42),
     }
+end
+
+function window:get_widget()
+    local container = wibox.widget({
+        widget = wibox.container.background,
+        bg = beautiful.colors.background,
+        border_color = beautiful.colors.light_black_15,
+        border_width = dpi(1),
+        shape = utils:srounded(dpi(12)),
+        {
+            widget = wibox.container.margin,
+            margins = utils:xmargins(6, 6, 8, 8),
+            {
+                widget = wibox.widget.textbox,
+                markup = 'center',
+                valign = 'center',
+                align = 'center',
+            }
+        }
+    })
+
+    container:connect_signal("mouse::enter", function ()
+        self.forced_opened = true
+        self:emit_signal("update_position")
+    end)
+
+    container:connect_signal("mouse::leave", function ()
+        self.forced_opened = false
+        self:emit_signal("update_position")
+    end)
+
+    return container
 end
 
 function window:make_widget()
@@ -37,21 +77,7 @@ function window:make_widget()
         fg = beautiful.colors.foreground,
         visible = false,
         ontop = true,
-        widget = {
-            widget = wibox.container.background,
-            bg = beautiful.colors.background,
-            shape = utils:srounded(dpi(12)),
-            {
-                widget = wibox.container.margin,
-                margins = utils:xmargins(6, 6, 8, 8),
-                {
-                    widget = wibox.widget.textbox,
-                    markup = 'center',
-                    valign = 'center',
-                    align = 'center',
-                }
-            }
-        }
+        widget = self:get_widget(),
     })
     
     function self.popup:repositionate(window)
@@ -90,15 +116,7 @@ function window:make_widget()
     self:apply_clients_listeners()
 end
 
-local WINDOW_STATUS = {
-    HIDDING = 'HIDDING',
-    SHOWING = 'SHOWING',
-    IDLE = 'IDLE',
-}
-
 function window:make_animation()
-    self.status = WINDOW_STATUS.IDLE
-
     self.animation = animation:new({
         duration = 0.25,
         easing = animation.easing.inOutQuad,
@@ -112,11 +130,6 @@ function window:make_animation()
         end,
         signals = {
             ["ended"] = function ()
-                if self.status == WINDOW_STATUS.HIDDING then
-                    -- closing the popup when needed
-                    self.popup.visible = false
-                end
-
                 self.status = WINDOW_STATUS.IDLE
             end
         }
@@ -124,12 +137,6 @@ function window:make_animation()
 end
 
 function window:show_popup()
-    if self.popup.visible == true then
-        print("[warning] window:show_popup(): can't show popup since self.popup.visible is already on")
-        return
-    end
-
-    self.popup.visible = true
     self.status = WINDOW_STATUS.SHOWING
 
     self.animation:set({
@@ -139,17 +146,22 @@ function window:show_popup()
 end
 
 function window:hide_popup()
-    -- this indicates the animation to make it invisible when it gets done
-    -- note that status gets resetted to idle after that
+    -- just a little indicator of the current animation status, no really useful atm
     self.status = WINDOW_STATUS.HIDDING
+
+    local offset = dpi(5)
 
     self.animation:set({
         x = self.popup.x,
-        y = self.s.geometry.y + self.s.geometry.height + beautiful.useless_gap * 2
+        y = (self.s.geometry.y + self.s.geometry.height) - offset
     })
 end
 
 local function should_hide_panel(self)
+    if self.forced_opened then
+        return false
+    end
+
     local client = Client.focus
 
     -- if no focused client, then, don't hide it ;)
@@ -182,6 +194,7 @@ end
 
 function window:apply_clients_listeners()
     local function update_state()
+        print("updating")
         gtimer.delayed_call(function ()
             if should_hide_panel(self) then
                 print("should_hide_panel() -> true")
@@ -198,6 +211,7 @@ function window:apply_clients_listeners()
     Client.connect_signal("property::geometry", update_state)
     Tag.connect_signal("property::selected", update_state)
     Tag.connect_signal("property::layout", update_state)
+    self:connect_signal("update_position", update_state)
 
     update_state()
 end
