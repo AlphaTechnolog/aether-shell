@@ -87,7 +87,6 @@ local function get_cached_icon(self, client)
 
     for classname, iconpath in pairs(icons) do
         if client.class == classname then
-            print("cached icon path " .. iconpath)
             return iconpath
         end
     end
