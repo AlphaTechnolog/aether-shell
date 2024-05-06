@@ -95,8 +95,8 @@ end
 
 function window:make_animation()
     self.animation = animation:new({
-        duration = 0.25,
-        easing = animation.easing.inOutQuad,
+        duration = 0.45,
+        easing = animation.easing.inOutExpo,
         pos = {
             x = self.popup.x,
             y = self.popup.y,
