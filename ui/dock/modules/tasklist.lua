@@ -1,3 +1,6 @@
+-- TODO: This module could be improved to add pinned dock entries, grouped dock entries
+-- drag and drop new clients, etc...
+
 local wibox = require("wibox")
 local gshape = require("gears.shape")
 local gtimer = require("gears.timer")
@@ -22,20 +25,17 @@ local function Launcher()
     local container = hoverable(wibox.widget({
         widget = wibox.container.background,
         bg = beautiful.colors.background,
+        fg = beautiful.colors.accent,
         shape = utils:srounded(dpi(8)),
         {
             widget = wibox.container.margin,
-            margins = utils:xmargins(6, 6, 12, 12),
+            margins = utils:xmargins(6, 6, 10, 10),
             {
-                widget = wibox.container.background,
-                shape = gshape.circle,
-                forced_width = dpi(24),
-                forced_height = dpi(24),
+                widget = wibox.widget.textbox,
+                markup = '',
+                font = beautiful.fonts:choose("icons", 24),
                 valign = "center",
-                halign = "center",
-                border_color = beautiful.colors.accent,
-                border_width = dpi(4),
-                bg = beautiful.colors.transparent
+                align = "center",
             }
         }
     }))
@@ -56,30 +56,70 @@ local function ClientButton(client)
         bg = beautiful.colors.background,
         shape = utils:srounded(dpi(7)),
         {
-            widget = wibox.container.margin,
-            margins = dpi(4),
+            layout = wibox.layout.align.vertical,
+            nil,
             {
-                widget = wibox.widget.imagebox,
-                image = icon_theme:get_client_icon_path(client),
-                valign = "center",
-                halign = "center",
-                forced_width = dpi(42),
-                forced_height = dpi(42)
+                widget = wibox.container.margin,
+                margins = dpi(4),
+                {
+                    widget = wibox.widget.imagebox,
+                    image = icon_theme:get_client_icon_path(client),
+                    valign = "center",
+                    halign = "center",
+                    forced_width = dpi(42),
+                    forced_height = dpi(42)
+                }
+            },
+            {
+                widget = wibox.container.place,
+                valign = 'center',
+                halign = 'center',
+                {
+                    id = "indicator-element",
+                    widget = wibox.container.background,
+                    bg = beautiful.colors.background,
+                    forced_height = dpi(4),
+                    forced_width = dpi(4),
+                    shape = gshape.rounded_bar,
+                }
             }
         }
     })
 
+    local indicator = container:get_children_by_id("indicator-element")[1]
+
+    if not indicator then
+        print("[warning] cannot find indicator in tasklist for client " .. client.title)
+        return
+    end
+
     container.animation = animation:new({
         duration = 0.25,
         easing = animation.easing.inOutQuad,
-        pos = color.hex_to_rgba(beautiful.colors.background),
+        pos = {
+            bg = color.hex_to_rgba(beautiful.colors.background),
+            indicator = color.hex_to_rgba(beautiful.colors.background),
+            indicator_width = 4
+        },
         update = function (_, pos)
-            container.bg = color.rgba_to_hex(pos)
+            if pos.bg then
+                container.bg = color.rgba_to_hex(pos.bg)
+            end
+            if pos.indicator then
+                indicator.bg = color.rgba_to_hex(pos.indicator)
+            end
+            if pos.indicator_width ~= nil then
+                indicator.forced_width = dpi(pos.indicator_width)
+            end
         end
     })
 
-    function container.animation:set_color(color_hex)
-        self:set(color.hex_to_rgba(color_hex))
+    function container.animation:set_color(state)
+        self:set({
+            bg = state.bg and color.hex_to_rgba(state.bg) or nil,
+            indicator = state.indicator and color.hex_to_rgba(state.indicator) or nil,
+            indicator_width = state.indicator_width or nil,
+        })
     end
 
     local function subscribed(key, callback)
@@ -96,26 +136,44 @@ local function ClientButton(client)
     end
 
     subscribed("active", function ()
-        container.animation:set_color(
-            client.active
+        container.animation:set_color({
+            indicator_width = client.active
+                and 22
+                or 4,
+            indicator = client.active
+                and beautiful.colors.accent
+                or beautiful.colors.background,
+            bg = client.active
                 and beautiful.colors.light_background_10
                 or beautiful.colors.background
-        )
+        })
     end)
 
     container:connect_signal("mouse::enter", function ()
         if client.active then
-            container.animation:set_color(beautiful.colors.light_black_15)
+            container.animation:set_color({
+                bg = beautiful.colors.light_black_15,
+                indicator = color.lighten(beautiful.colors.accent, 10)
+            })
         else
-            container.animation:set_color(beautiful.colors.light_background_10)
+            container.animation:set_color({
+                bg = beautiful.colors.light_background_10,
+                indicator = beautiful.colors.light_background_10,
+            })
         end
     end)
 
     container:connect_signal("mouse::leave", function ()
         if client.active then
-            container.animation:set_color(beautiful.colors.light_background_10)
+            container.animation:set_color({
+                bg = beautiful.colors.light_background_10,
+                indicator = beautiful.colors.accent,
+            })
         else
-            container.animation:set_color(beautiful.colors.background)
+            container.animation:set_color({
+                bg = beautiful.colors.background,
+                indicator = beautiful.colors.background
+            })
         end
     end)
 
