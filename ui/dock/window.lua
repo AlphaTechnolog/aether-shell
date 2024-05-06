@@ -7,6 +7,8 @@ local utils = require("framework.utils")()
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
+local Tasklist = require("ui.dock.modules.tasklist")
+
 local window = {}
 
 local WINDOW_STATUS = {
@@ -22,14 +24,6 @@ function window:constructor(s)
     self:make_widget()
 end
 
--- default minimum geometry
-local function geometry()
-    return {
-        width = dpi(250),
-        height = dpi(42),
-    }
-end
-
 function window:get_widget()
     local container = wibox.widget({
         widget = wibox.container.background,
@@ -41,10 +35,8 @@ function window:get_widget()
             widget = wibox.container.margin,
             margins = utils:xmargins(6, 6, 8, 8),
             {
-                widget = wibox.widget.textbox,
-                markup = 'center',
-                valign = 'center',
-                align = 'center',
+                layout = wibox.layout.fixed.horizontal,
+                Tasklist(self.s):render(),
             }
         }
     })
@@ -63,41 +55,26 @@ function window:get_widget()
 end
 
 function window:make_widget()
-    local geo = geometry()
+    local height = dpi(62)
 
     self.popup = awful.popup({
         screen = self.s,
-        minimum_width = geo.width,
         maximum_width = self.s.geometry.width - beautiful.useless_gap * 4,
-        minimum_height = geo.height,
-        maximum_height = geo.height,
-        x = 0,
-        y = 0,
+        minimum_height = height,
+        maximum_height = height,
         bg = beautiful.colors.transparent,
         fg = beautiful.colors.foreground,
         visible = false,
         ontop = true,
         widget = self:get_widget(),
     })
+
+    self.popup.x = self.s.geometry.x + ((self.s.geometry.width - self.popup.width) / 2)
+    self.popup.y = self.s.geometry.y + (self.s.geometry.height - beautiful.useless_gap * 2)
     
     function self.popup:repositionate(window)
         local function calculate()
-            local s = self.screen
-
-            local new_state = {
-                x = s.geometry.x + ((s.geometry.width - self.width) / 2),
-                y = s.geometry.y + ((s.geometry.height - self.height) - beautiful.useless_gap * 2)
-            }
-
-            -- use the animation only after first time
-            -- FIXME: still showing positioning animation on boot
-            if (self.x == 0 or self.y == 0) or not window.animation then
-                self.x = new_state.x
-                self.y = new_state.y
-            else
-                local window_animation = window.animation
-                window_animation:set(new_state)
-            end
+            window:emit_signal("update_position")
         end
 
         calculate()
@@ -140,7 +117,7 @@ function window:show_popup()
     self.status = WINDOW_STATUS.SHOWING
 
     self.animation:set({
-        x = self.popup.x, -- leave x as how it's
+        x = self.s.geometry.x + ((self.s.geometry.width - self.popup.width) / 2),
         y = self.s.geometry.y + ((self.s.geometry.height - self.popup.height) - beautiful.useless_gap * 2)
     })
 end
@@ -152,7 +129,7 @@ function window:hide_popup()
     local offset = dpi(5)
 
     self.animation:set({
-        x = self.popup.x,
+        x = self.s.geometry.x + ((self.s.geometry.width - self.popup.width) / 2),
         y = (self.s.geometry.y + self.s.geometry.height) - offset
     })
 end
@@ -162,21 +139,19 @@ local function should_hide_panel(self)
         return false
     end
 
-    local client = Client.focus
-
-    -- if no focused client, then, don't hide it ;)
-    if not client then
+    if #self.s.selected_tag:clients() == 0 then
         return false
     end
 
-    local is_floating = client.floating or awful.layout.get(self.s) == awful.layout.suit.floating
-    
-    if not is_floating or client.maximized then
+    local curclient = Client.focus
+    local is_floating = curclient.floating or awful.layout.get(self.s) == awful.layout.suit.floating
+
+    if not is_floating or curclient.maximized then
         return true
     end
 
     local geo = {
-        client = client:geometry(),
+        client = curclient:geometry(),
         dock = {
             x = self.popup.x,
             y = self.popup.y,
@@ -194,19 +169,17 @@ end
 
 function window:apply_clients_listeners()
     local function update_state()
-        print("updating")
         gtimer.delayed_call(function ()
             if should_hide_panel(self) then
-                print("should_hide_panel() -> true")
                 self:hide_popup()
             else
-                print("should_hide_panel() -> false")
                 self:show_popup()
             end
         end)
     end
 
     Client.connect_signal("list", update_state)
+    Client.connect_signal("property::active", update_state)
     Client.connect_signal("property::floating", update_state)
     Client.connect_signal("property::geometry", update_state)
     Tag.connect_signal("property::selected", update_state)
