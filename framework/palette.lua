@@ -1,5 +1,5 @@
-local oop = require("framework.oop")
-local color = require("framework.color")
+local oop = require('framework.oop')
+local color = require('framework.color')
 
 local _palette = {}
 
@@ -10,7 +10,7 @@ function _palette:generate_shades(base_palette)
   local ret = {}
 
   for name, hex in pairs(base_palette) do
-    if name == "transparent" then
+    if name == 'transparent' then
       goto continue
     end
 
@@ -19,8 +19,8 @@ function _palette:generate_shades(base_palette)
     local i = 1
 
     while i <= shades_count do
-      ret["dark_" .. name .. "_" .. tostring(i)] = color.darken(hex, i * step)
-      ret["light_" .. name .. "_" .. tostring(i)] = color.lighten(hex, i * step)
+      ret['dark_' .. name .. '_' .. tostring(i)] = color.darken(hex, i * step)
+      ret['light_' .. name .. '_' .. tostring(i)] = color.lighten(hex, i * step)
 
       i = i + 1
     end

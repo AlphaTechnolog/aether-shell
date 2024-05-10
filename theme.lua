@@ -4,9 +4,9 @@
 -- |___|_|_|_| .__/\___/_|    \__/__/
 --                     |_|
 
-local xresources = require("beautiful.xresources")
-local gfs = require("gears.filesystem")
-local palette = require("framework.palette")()
+local xresources = require('beautiful.xresources')
+local gfs = require('gears.filesystem')
+local palette = require('framework.palette')()
 local dpi = xresources.apply_dpi
 
 local themes_path = gfs.get_themes_dir()
@@ -19,16 +19,16 @@ local theme = {}
 -- |_|\___/_||_\__/__/
 
 theme.fonts = {
-	normal = "Roboto ",
-	icons = "Material Symbols Rounded ",
-	nerdfonts = "Iosevka Nerd Font ",
+  normal = 'Roboto ',
+  icons = 'Material Symbols Rounded ',
+  nerdfonts = 'Iosevka Nerd Font ',
 }
 
 function theme.fonts:choose(family, size)
-	return self[family] .. tostring(size)
+  return self[family] .. tostring(size)
 end
 
-theme.font = theme.fonts:choose("normal", 9)
+theme.font = theme.fonts:choose('normal', 9)
 
 --    ___         _
 -- / __|___| |___ _ _ ___
@@ -36,34 +36,34 @@ theme.font = theme.fonts:choose("normal", 9)
 -- \___\___/_\___/_| /__/
 
 theme.colors = palette:generate_shades({
-	background = "#101419",
-	foreground = "#b6beca",
-	black = "#1c252c",
-	hovered_black = "#384148",
-	red = "#e05f65",
-	green = "#78dba9",
-	yellow = "#f1cf8a",
-	blue = "#70a5eb",
-	magenta = "#c68aee",
-	cyan = "#74bee9",
-	white = "#dee1e6",
+  background = '#101419',
+  foreground = '#b6beca',
+  black = '#1a2029',
+  hovered_black = '#242c39',
+  red = '#e05f65',
+  green = '#78dba9',
+  yellow = '#f1cf8a',
+  blue = '#70a5eb',
+  magenta = '#c68aee',
+  cyan = '#74bee9',
+  white = '#dee1e6',
 })
 
 -- transparent bg
-theme.colors.transparent = theme.colors.background .. "00"
+theme.colors.transparent = theme.colors.background .. '00'
 
 -- accent color
 -- TODO: Add a popup to customize this color
 local function make_color_shades(key)
-	theme.colors[key .. "_shade"] = theme.colors[key] .. "1A" -- 10%
-	theme.colors["light_" .. key .. "_shade"] = theme.colors[key] .. "33" -- 20%
+  theme.colors[key .. '_shade'] = theme.colors[key] .. '1A' -- 10%
+  theme.colors['light_' .. key .. '_shade'] = theme.colors[key] .. '33' -- 20%
 end
 
 theme.colors.accent = theme.colors.blue
 theme.colors.secondary_accent = theme.colors.cyan
 
-for _, key in ipairs({ "accent", "secondary_accent" }) do
-	make_color_shades(key)
+for _, key in ipairs({ 'accent', 'secondary_accent' }) do
+  make_color_shades(key)
 end
 
 theme.bg_normal = theme.colors.background
@@ -84,7 +84,7 @@ theme.border_width = dpi(0)
 -- theme.border_color_marked = theme.colors.light_hovered_black_15
 theme.menu_height = dpi(15)
 theme.menu_width = dpi(100)
-theme.icon_theme = "Papirus-Dark"
+theme.icon_theme = 'Papirus-Dark'
 
 --    _                                             _
 -- | |     __ _ _    _ ___ _    _| |_
@@ -92,21 +92,21 @@ theme.icon_theme = "Papirus-Dark"
 -- |____\__,_|\_, \___/\_,_|\__|
 --                        |__/
 
-theme.layout_fairh = themes_path .. "default/layouts/fairhw.png"
-theme.layout_fairv = themes_path .. "default/layouts/fairvw.png"
-theme.layout_floating = themes_path .. "default/layouts/floatingw.png"
-theme.layout_magnifier = themes_path .. "default/layouts/magnifierw.png"
-theme.layout_max = themes_path .. "default/layouts/maxw.png"
-theme.layout_fullscreen = themes_path .. "default/layouts/fullscreenw.png"
-theme.layout_tilebottom = themes_path .. "default/layouts/tilebottomw.png"
-theme.layout_tileleft = themes_path .. "default/layouts/tileleftw.png"
-theme.layout_tile = themes_path .. "default/layouts/tilew.png"
-theme.layout_tiletop = themes_path .. "default/layouts/tiletopw.png"
-theme.layout_spiral = themes_path .. "default/layouts/spiralw.png"
-theme.layout_dwindle = themes_path .. "default/layouts/dwindlew.png"
-theme.layout_cornernw = themes_path .. "default/layouts/cornernww.png"
-theme.layout_cornerne = themes_path .. "default/layouts/cornernew.png"
-theme.layout_cornersw = themes_path .. "default/layouts/cornersww.png"
-theme.layout_cornerse = themes_path .. "default/layouts/cornersew.png"
+theme.layout_fairh = themes_path .. 'default/layouts/fairhw.png'
+theme.layout_fairv = themes_path .. 'default/layouts/fairvw.png'
+theme.layout_floating = themes_path .. 'default/layouts/floatingw.png'
+theme.layout_magnifier = themes_path .. 'default/layouts/magnifierw.png'
+theme.layout_max = themes_path .. 'default/layouts/maxw.png'
+theme.layout_fullscreen = themes_path .. 'default/layouts/fullscreenw.png'
+theme.layout_tilebottom = themes_path .. 'default/layouts/tilebottomw.png'
+theme.layout_tileleft = themes_path .. 'default/layouts/tileleftw.png'
+theme.layout_tile = themes_path .. 'default/layouts/tilew.png'
+theme.layout_tiletop = themes_path .. 'default/layouts/tiletopw.png'
+theme.layout_spiral = themes_path .. 'default/layouts/spiralw.png'
+theme.layout_dwindle = themes_path .. 'default/layouts/dwindlew.png'
+theme.layout_cornernw = themes_path .. 'default/layouts/cornernww.png'
+theme.layout_cornerne = themes_path .. 'default/layouts/cornernew.png'
+theme.layout_cornersw = themes_path .. 'default/layouts/cornersww.png'
+theme.layout_cornerse = themes_path .. 'default/layouts/cornersew.png'
 
 return theme

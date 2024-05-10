@@ -1,57 +1,57 @@
-local GLib = require("lgi").GLib
-local gobject = require "gears.object"
-local gtable = require "gears.table"
-local gtimer = require "gears.timer"
-local gpcall = require "gears.protected_call"
-local subscribable = require "framework.animation.subscribable"
-local tween = require "framework.animation.tween"
+local GLib = require('lgi').GLib
+local gobject = require('gears.object')
+local gtable = require('gears.table')
+local gtimer = require('gears.timer')
+local gpcall = require('gears.protected_call')
+local subscribable = require('framework.animation.subscribable')
+local tween = require('framework.animation.tween')
 local ipairs = ipairs
 local table = table
 local pairs = pairs
 
 local animation_manager = {}
 animation_manager.easing = {
-  linear = "linear",
-  inQuad = "inQuad",
-  outQuad = "outQuad",
-  inOutQuad = "inOutQuad",
-  outInQuad = "outInQuad",
-  inCubic = "inCubic",
-  outCubic = "outCubic",
-  inOutCubic = "inOutCubic",
-  outInCubic = "outInCubic",
-  inQuart = "inQuart",
-  outQuart = "outQuart",
-  inOutQuart = "inOutQuart",
-  outInQuart = "outInQuart",
-  inQuint = "inQuint",
-  outQuint = "outQuint",
-  inOutQuint = "inOutQuint",
-  outInQuint = "outInQuint",
-  inSine = "inSine",
-  outSine = "outSine",
-  inOutSine = "inOutSine",
-  outInSine = "outInSine",
-  inExpo = "inExpo",
-  outExpo = "outExpo",
-  inOutExpo = "inOutExpo",
-  outInExpo = "outInExpo",
-  inCirc = "inCirc",
-  outCirc = "outCirc",
-  inOutCirc = "inOutCirc",
-  outInCirc = "outInCirc",
-  inElastic = "inElastic",
-  outElastic = "outElastic",
-  inOutElastic = "inOutElastic",
-  outInElastic = "outInElastic",
-  inBack = "inBack",
-  outBack = "outBack",
-  inOutBack = "inOutBack",
-  outInBack = "outInBack",
-  inBounce = "inBounce",
-  outBounce = "outBounce",
-  inOutBounce = "inOutBounce",
-  outInBounce = "outInBounce",
+  linear = 'linear',
+  inQuad = 'inQuad',
+  outQuad = 'outQuad',
+  inOutQuad = 'inOutQuad',
+  outInQuad = 'outInQuad',
+  inCubic = 'inCubic',
+  outCubic = 'outCubic',
+  inOutCubic = 'inOutCubic',
+  outInCubic = 'outInCubic',
+  inQuart = 'inQuart',
+  outQuart = 'outQuart',
+  inOutQuart = 'inOutQuart',
+  outInQuart = 'outInQuart',
+  inQuint = 'inQuint',
+  outQuint = 'outQuint',
+  inOutQuint = 'inOutQuint',
+  outInQuint = 'outInQuint',
+  inSine = 'inSine',
+  outSine = 'outSine',
+  inOutSine = 'inOutSine',
+  outInSine = 'outInSine',
+  inExpo = 'inExpo',
+  outExpo = 'outExpo',
+  inOutExpo = 'inOutExpo',
+  outInExpo = 'outInExpo',
+  inCirc = 'inCirc',
+  outCirc = 'outCirc',
+  inOutCirc = 'inOutCirc',
+  outInCirc = 'outInCirc',
+  inElastic = 'inElastic',
+  outElastic = 'outElastic',
+  inOutElastic = 'inOutElastic',
+  outInElastic = 'outInElastic',
+  inBack = 'inBack',
+  outBack = 'outBack',
+  inOutBack = 'inOutBack',
+  outInBack = 'outInBack',
+  inBounce = 'inBounce',
+  outBounce = 'outBounce',
+  inOutBounce = 'inOutBounce',
+  outInBounce = 'outInBounce',
 }
 
 local animation = {}
@@ -99,10 +99,10 @@ local function init_animation_loop(self)
               -- Snap to end
               animation.pos = animation.tween.target
 
-              gpcall(animation.emit_signal, animation, "update", animation.pos)
+              gpcall(animation.emit_signal, animation, 'update', animation.pos)
               gpcall(animation.fire, animation, animation.pos)
 
-              gpcall(animation.emit_signal, animation, "ended", animation.pos)
+              gpcall(animation.emit_signal, animation, 'ended', animation.pos)
               gpcall(animation.ended.fire, animation, animation.pos)
 
               table.remove(self._private.animations, index)
@@ -111,7 +111,7 @@ local function init_animation_loop(self)
           else
             animation.pos = pos
 
-            gpcall(animation.emit_signal, animation, "update", animation.pos)
+            gpcall(animation.emit_signal, animation, 'update', animation.pos)
             gpcall(animation.fire, animation, animation.pos)
           end
         else
@@ -132,31 +132,32 @@ function animation:set(args)
   -- I'd rather this always be a table, but Awestoer/Rubbto
   -- except the :set() method to have 1 number value parameter
   -- used to set the target
-  local is_table = type(args) == "table"
+  local is_table = type(args) == 'table'
   local initial = is_table and (args.pos or self.pos) or self.pos
   local subject = is_table and (args.subject or self.subject) or self.subject
   local target = is_table and (args.target or self.target) or args
-  local duration = is_table and (args.duration or self.duration) or self.duration
+  local duration = is_table and (args.duration or self.duration)
+    or self.duration
   local easing = is_table and (args.easing or self.easing) or self.easing
 
   if self.tween == nil or self.reset_on_stop == true then
-    self.tween = tween.new {
+    self.tween = tween.new({
       initial = initial,
       subject = subject,
       target = target,
       duration = second_to_micro(duration),
       easing = easing,
-    }
+    })
   end
 
   if self._private.anim_manager._private.instant then
     self.pos = self.tween.target
     self:fire(self.pos)
-    self:emit_signal("update", self.pos)
+    self:emit_signal('update', self.pos)
 
     self._private.state = false
     self.ended:fire(self.pos)
-    self:emit_signal("ended", self.pos)
+    self:emit_signal('ended', self.pos)
     return
   end
 
@@ -168,7 +169,7 @@ function animation:set(args)
   self.last_elapsed = GLib.get_monotonic_time()
 
   self.started:fire()
-  self:emit_signal "started"
+  self:emit_signal('started')
 end
 
 -- Rubato compatibility
@@ -240,7 +241,7 @@ function animation_manager:new(args)
     ret:connect_signal(sig, sigfun)
   end
   if args.update ~= nil then
-    ret:connect_signal("update", args.update)
+    ret:connect_signal('update', args.update)
   end
 
   gtable.crush(ret, args, true)
@@ -255,7 +256,7 @@ function animation_manager:new(args)
 end
 
 local function new()
-  local ret = gobject {}
+  local ret = gobject({})
   gtable.crush(ret, animation_manager, true)
 
   ret._private = {}

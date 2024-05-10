@@ -1,5 +1,5 @@
-local gtable = require "gears.table"
-local gobject = require "gears.object"
+local gtable = require('gears.table')
+local gobject = require('gears.object')
 
 local setmetatable = setmetatable
 
@@ -13,7 +13,7 @@ return function(prototype)
   end
 
   local function new(...)
-    local ret = gobject {}
+    local ret = gobject({})
     gtable.crush(ret, prototype, true)
 
     ret._private = {}
