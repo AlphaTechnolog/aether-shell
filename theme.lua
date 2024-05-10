@@ -4,9 +4,9 @@
 -- |___|_|_|_| .__/\___/_|    \__/__/
 --                     |_|
 
-local xresources = require "beautiful.xresources"
-local gfs = require "gears.filesystem"
-local palette = require "framework.palette"()
+local xresources = require("beautiful.xresources")
+local gfs = require("gears.filesystem")
+local palette = require("framework.palette")()
 local dpi = xresources.apply_dpi
 
 local themes_path = gfs.get_themes_dir()
@@ -19,13 +19,13 @@ local theme = {}
 -- |_|\___/_||_\__/__/
 
 theme.fonts = {
-    normal = "Roboto ",
-    icons = "Material Symbols Rounded ",
-    nerdfonts = "Iosevka Nerd Font ",
+	normal = "Roboto ",
+	icons = "Material Symbols Rounded ",
+	nerdfonts = "Iosevka Nerd Font ",
 }
 
 function theme.fonts:choose(family, size)
-    return self[family] .. tostring(size)
+	return self[family] .. tostring(size)
 end
 
 theme.font = theme.fonts:choose("normal", 9)
@@ -36,34 +36,34 @@ theme.font = theme.fonts:choose("normal", 9)
 -- \___\___/_\___/_| /__/
 
 theme.colors = palette:generate_shades({
-    background = "#161617",
-    foreground = "#C7CCD1",
-    black = "#202023",
-    hovered_black = "#2c2c30",
-    red = "#c795ae",
-    green = "#95C7AE",
-    yellow = "#C7C795",
-    blue = "#95AEC7",
-    magenta = "#AE95C7",
-    cyan = "#a6bbd0",
-    white = "#DFE2E5",
+	background = "#101419",
+	foreground = "#b6beca",
+	black = "#1c252c",
+	hovered_black = "#384148",
+	red = "#e05f65",
+	green = "#78dba9",
+	yellow = "#f1cf8a",
+	blue = "#70a5eb",
+	magenta = "#c68aee",
+	cyan = "#74bee9",
+	white = "#dee1e6",
 })
 
 -- transparent bg
-theme.colors.transparent = theme.colors.background .. '00'
+theme.colors.transparent = theme.colors.background .. "00"
 
 -- accent color
 -- TODO: Add a popup to customize this color
 local function make_color_shades(key)
-    theme.colors[key .. "_shade"] = theme.colors[key] .. '1A' -- 10%
-    theme.colors["light_" .. key .. "_shade"] = theme.colors[key] .. '33' -- 20%
+	theme.colors[key .. "_shade"] = theme.colors[key] .. "1A" -- 10%
+	theme.colors["light_" .. key .. "_shade"] = theme.colors[key] .. "33" -- 20%
 end
 
 theme.colors.accent = theme.colors.blue
 theme.colors.secondary_accent = theme.colors.cyan
 
-for _, key in ipairs { 'accent', 'secondary_accent' } do
-    make_color_shades(key)
+for _, key in ipairs({ "accent", "secondary_accent" }) do
+	make_color_shades(key)
 end
 
 theme.bg_normal = theme.colors.background
