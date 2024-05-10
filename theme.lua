@@ -53,18 +53,17 @@ theme.colors = palette:generate_shades({
 theme.colors.transparent = theme.colors.background .. '00'
 
 -- accent color
--- TODO: Add a popup to customize this color
-local function make_color_shades(key)
-  theme.colors[key .. '_shade'] = theme.colors[key] .. '1A' -- 10%
-  theme.colors['light_' .. key .. '_shade'] = theme.colors[key] .. '33' -- 20%
+function theme.colors:apply_shade(key)
+  return { regular = self[key] .. '1A', bright = self[key] .. '33' }
 end
 
+-- TODO: Add a popup to customize this color
 theme.colors.accent = theme.colors.blue
 theme.colors.secondary_accent = theme.colors.cyan
 
-for _, key in ipairs({ 'accent', 'secondary_accent' }) do
-  make_color_shades(key)
-end
+local accent_shade = theme.colors:apply_shade('accent')
+theme.colors.accent_shade = accent_shade.regular
+theme.colors.light_accent_shade = accent_shade.bright
 
 theme.bg_normal = theme.colors.background
 theme.fg_normal = theme.colors.foreground

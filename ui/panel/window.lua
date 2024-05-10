@@ -4,6 +4,7 @@ local oop = require('framework.oop')
 local beautiful = require('beautiful')
 local dpi = beautiful.xresources.apply_dpi
 
+local Music = require('ui.panel.modules.music')
 local Taglist = require('ui.panel.modules.taglist')
 local Statusbar = require('ui.panel.modules.statusbar')
 
@@ -34,10 +35,18 @@ function _window:make_window()
       {
         layout = wibox.layout.stack,
         {
-          widget = wibox.container.place,
-          valign = 'center',
-          halign = 'right',
-          Statusbar(self.s):render(),
+          layout = wibox.layout.align.horizontal,
+          {
+            layout = wibox.layout.fixed.horizontal,
+            spacing = dpi(6),
+            Music():render(),
+          },
+          nil,
+          {
+            layout = wibox.layout.fixed.horizontal,
+            spacing = dpi(6),
+            Statusbar(self.s):render(),
+          },
         },
         {
           widget = wibox.container.place,

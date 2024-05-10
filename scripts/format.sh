@@ -3,3 +3,5 @@
 
 echo $(realpath $(dirname $0)/../) | xargs \
   stylua -g "*.lua" -g "!*.spec.lua" --
+
+echo "Formatting went well."
