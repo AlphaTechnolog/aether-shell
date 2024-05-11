@@ -4,3 +4,6 @@
 [submodule "extern/color"]
 	path = extern/color
 	url = https://github.com/andOrlando/color.git
+[submodule "extern/bling"]
+	path = extern/bling
+	url = https://github.com/blingcorp/bling.git

@@ -36,17 +36,17 @@ theme.font = theme.fonts:choose('normal', 9)
 -- \___\___/_\___/_| /__/
 
 theme.colors = palette:generate_shades({
-  background = '#101419',
+  background = '#131313',
   foreground = '#b6beca',
-  black = '#1a2029',
-  hovered_black = '#242c39',
-  red = '#e05f65',
-  green = '#78dba9',
-  yellow = '#f1cf8a',
-  blue = '#70a5eb',
-  magenta = '#c68aee',
-  cyan = '#74bee9',
-  white = '#dee1e6',
+  black = '#202020',
+  hovered_black = '#2c2c2c',
+  red = '#c6797c',
+  green = '#8cc7a9',
+  yellow = '#dcc89f',
+  blue = '#89a8d2',
+  magenta = '#c29eda',
+  cyan = '#8bb8d2',
+  white = '#e0e1e4',
 })
 
 -- transparent bg
@@ -58,8 +58,8 @@ function theme.colors:apply_shade(key)
 end
 
 -- TODO: Add a popup to customize this color
-theme.colors.accent = theme.colors.blue
-theme.colors.secondary_accent = theme.colors.cyan
+theme.colors.accent = theme.colors.yellow
+theme.colors.secondary_accent = theme.colors.magenta
 
 local accent_shade = theme.colors:apply_shade('accent')
 theme.colors.accent_shade = accent_shade.regular

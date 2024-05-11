@@ -1,5 +1,6 @@
 local wibox = require('wibox')
 local gshape = require('gears.shape')
+local bling = require('extern.bling')
 local animation = require('framework.animation')
 local utils = require('framework.utils')()
 local oop = require('framework.oop')
@@ -10,19 +11,38 @@ local music = {}
 
 function music:render()
   local content_layout = wibox.layout.fixed.horizontal()
-  local chip_background = beautiful.colors:apply_shade('light_cyan_10')
+  local chip_background = beautiful.colors:apply_shade('secondary_accent')
+  local playerctl = bling.signal.playerctl.lib()
 
   local container = wibox.widget({
     widget = wibox.container.background,
     bg = chip_background.bright,
-    fg = beautiful.colors.cyan,
+    fg = beautiful.colors.secondary_accent,
     shape = gshape.rounded_bar,
+    opacity = 0,
     {
       widget = wibox.container.margin,
       margins = utils:xmargins(4, 4, 8, 7),
       content_layout,
     },
   })
+
+  container.opacity_animation = animation:new({
+    duration = 0.25,
+    easing = animation.easing.linear,
+    pos = 0,
+    update = function(_, pos)
+      container.opacity = pos
+    end,
+  })
+
+  function container:hide()
+    self.opacity_animation:set(0)
+  end
+
+  function container:show()
+    self.opacity_animation:set(1)
+  end
 
   content_layout:add(wibox.widget({
     widget = wibox.widget.textbox,
@@ -32,7 +52,25 @@ function music:render()
     align = 'center',
   }))
 
-  local music = 'peaceful piano radio 🎹 - music to focus/study to'
+  self.raw_music_name = ''
+
+  local music_name = wibox.widget({
+    widget = wibox.widget.textbox,
+    align = 'center',
+    valign = 'center',
+  })
+
+  playerctl:connect_signal('metadata', function(_, title)
+    music_name:set_markup_silently(title)
+    container:show()
+    self.raw_music_name = title
+  end)
+
+  playerctl:connect_signal('no_players', function()
+    music_name:set_markup_silently('')
+    container:hide()
+    self.raw_music_name = ''
+  end)
 
   local expandible = wibox.widget({
     widget = wibox.container.margin,
@@ -49,12 +87,7 @@ function music:render()
           widget = wibox.container.scroll.horizontal,
           step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
           speed = 60,
-          {
-            widget = wibox.widget.textbox,
-            text = music,
-            align = 'center',
-            valign = 'center',
-          },
+          music_name,
         },
       },
     },
@@ -88,11 +121,13 @@ function music:render()
 
   expandible.status = ExpandibleStatus.Idle
 
+  local cself = self
+
   function expandible.animation:reveal()
     expandible.status = ExpandibleStatus.Opening
     expandible.background_element.visible = true
 
-    self:set((#music < 40 and #music or 40) * 6)
+    self:set((#cself.raw_music_name < 40 and #cself.raw_music_name or 40) * 6)
   end
 
   function expandible.animation:hide()
