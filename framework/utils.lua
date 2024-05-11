@@ -1,7 +1,7 @@
-local awful = require('awful')
-local gshape = require('gears.shape')
-local oop = require('framework.oop')
-local dpi = require('beautiful.xresources').apply_dpi
+local awful = require("awful")
+local gshape = require("gears.shape")
+local oop = require("framework.oop")
+local dpi = require("beautiful.xresources").apply_dpi
 
 local _utils = {}
 
@@ -74,7 +74,7 @@ function _utils:truncate_text(text, max_length)
     return text
   end
 
-  local suffix = '...'
+  local suffix = "..."
   local truncated_text = string.sub(text, 1, max_length - string.len(suffix))
     .. suffix
 

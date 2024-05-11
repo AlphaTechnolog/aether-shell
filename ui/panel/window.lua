@@ -1,12 +1,12 @@
-local wibox = require('wibox')
-local awful = require('awful')
-local oop = require('framework.oop')
-local beautiful = require('beautiful')
+local wibox = require("wibox")
+local awful = require("awful")
+local oop = require("framework.oop")
+local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
-local Music = require('ui.panel.modules.music')
-local Taglist = require('ui.panel.modules.taglist')
-local Statusbar = require('ui.panel.modules.statusbar')
+local Music = require("ui.panel.modules.music")
+local Taglist = require("ui.panel.modules.taglist")
+local Statusbar = require("ui.panel.modules.statusbar")
 
 local _window = {}
 
@@ -19,7 +19,7 @@ function _window:make_window()
   local height = dpi(38)
 
   self.popup = awful.popup({
-    type = 'dock',
+    type = "dock",
     visible = false,
     bg = beautiful.colors.transparent,
     fg = beautiful.colors.foreground,
@@ -50,8 +50,8 @@ function _window:make_window()
         },
         {
           widget = wibox.container.place,
-          halign = 'center',
-          valign = 'center',
+          halign = "center",
+          valign = "center",
           Taglist(self.s):render(),
         },
       },

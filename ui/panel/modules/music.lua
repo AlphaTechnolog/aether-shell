@@ -1,17 +1,17 @@
-local wibox = require('wibox')
-local gshape = require('gears.shape')
-local bling = require('extern.bling')
-local animation = require('framework.animation')
-local utils = require('framework.utils')()
-local oop = require('framework.oop')
-local beautiful = require('beautiful')
+local wibox = require("wibox")
+local gshape = require("gears.shape")
+local bling = require("extern.bling")
+local animation = require("framework.animation")
+local utils = require("framework.utils")()
+local oop = require("framework.oop")
+local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
 local music = {}
 
 function music:render()
   local content_layout = wibox.layout.fixed.horizontal()
-  local chip_background = beautiful.colors:apply_shade('secondary_accent')
+  local chip_background = beautiful.colors:apply_shade("secondary_accent")
   local playerctl = bling.signal.playerctl.lib()
 
   local container = wibox.widget({
@@ -46,37 +46,37 @@ function music:render()
 
   content_layout:add(wibox.widget({
     widget = wibox.widget.textbox,
-    font = beautiful.fonts:choose('icons', 12),
-    markup = '',
-    valign = 'center',
-    align = 'center',
+    font = beautiful.fonts:choose("icons", 12),
+    markup = "",
+    valign = "center",
+    align = "center",
   }))
 
-  self.raw_music_name = ''
+  self.raw_music_name = ""
 
   local music_name = wibox.widget({
     widget = wibox.widget.textbox,
-    align = 'center',
-    valign = 'center',
+    align = "center",
+    valign = "center",
   })
 
-  playerctl:connect_signal('metadata', function(_, title)
+  playerctl:connect_signal("metadata", function(_, title)
     music_name:set_markup_silently(title)
     container:show()
     self.raw_music_name = title
   end)
 
-  playerctl:connect_signal('no_players', function()
-    music_name:set_markup_silently('')
+  playerctl:connect_signal("no_players", function()
+    music_name:set_markup_silently("")
     container:hide()
-    self.raw_music_name = ''
+    self.raw_music_name = ""
   end)
 
   local expandible = wibox.widget({
     widget = wibox.container.margin,
     left = dpi(1),
     {
-      id = 'background_element',
+      id = "background_element",
       widget = wibox.container.background,
       forced_width = dpi(1),
       visible = false,
@@ -94,12 +94,12 @@ function music:render()
   })
 
   expandible.background_element =
-    expandible:get_children_by_id('background_element')[1]
+    expandible:get_children_by_id("background_element")[1]
 
   local ExpandibleStatus = {
-    Opening = 'Opening',
-    Closing = 'Closing',
-    Idle = 'Idle',
+    Opening = "Opening",
+    Closing = "Closing",
+    Idle = "Idle",
   }
 
   expandible.animation = animation:new({
@@ -110,7 +110,7 @@ function music:render()
       expandible.background_element.forced_width = dpi(pos)
     end,
     signals = {
-      ['ended'] = function()
+      ["ended"] = function()
         if expandible.status == ExpandibleStatus.Closing then
           expandible.background_element.visible = false
         end
@@ -135,11 +135,11 @@ function music:render()
     self:set(1)
   end
 
-  container:connect_signal('mouse::enter', function()
+  container:connect_signal("mouse::enter", function()
     expandible.animation:reveal()
   end)
 
-  container:connect_signal('mouse::leave', function()
+  container:connect_signal("mouse::leave", function()
     expandible.animation:hide()
   end)
 

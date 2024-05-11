@@ -1,6 +1,6 @@
-local animation = require('framework.animation')
-local color = require('framework.color')
-local beautiful = require('beautiful')
+local animation = require("framework.animation")
+local color = require("framework.color")
+local beautiful = require("beautiful")
 
 return function(widget)
   function widget:setup_hover(opts)
@@ -21,17 +21,17 @@ return function(widget)
 
   function widget:use_color(new_color)
     if not self.animation then
-      error('[widget:hoverable] no animation yet, call setup() first')
+      error("[widget:hoverable] no animation yet, call setup() first")
     end
 
     self.animation:set({ target = color.hex_to_rgba(new_color) })
   end
 
   function widget:subscribe_hover()
-    self:connect_signal('mouse::enter', function()
+    self:connect_signal("mouse::enter", function()
       self:use_color(self.opts.colors.hovered)
     end)
-    self:connect_signal('mouse::leave', function()
+    self:connect_signal("mouse::leave", function()
       self:use_color(self.opts.colors.normal)
     end)
   end

@@ -1,7 +1,7 @@
 local tween = {
-  _VERSION = 'tween 2.1.1',
-  _DESCRIPTION = 'tweening for lua',
-  _URL = 'https://github.com/kikito/tween.lua',
+  _VERSION = "tween 2.1.1",
+  _DESCRIPTION = "tweening for lua",
+  _URL = "https://github.com/kikito/tween.lua",
   _LICENSE = [[
     MIT LICENSE
     Copyright (c) 2014 Enrique García Cota, Yuichi Tateno, Emmanuel Oga
@@ -33,8 +33,8 @@ local tween = {
 -- c = change == ending - beginning
 -- d = duration == running time. How much time has passed *right now*
 
-local gobject = require('gears.object')
-local gtable = require('gears.table')
+local gobject = require("gears.object")
+local gtable = require("gears.table")
 
 local sin, cos, pi, sqrt, abs, asin =
   math.sin, math.cos, math.pi, math.sqrt, math.abs, math.asin
@@ -401,7 +401,7 @@ local function copyTables(destination, keysTable, valuesTable)
   end
 
   for k, v in pairs(keysTable) do
-    if type(v) == 'table' then
+    if type(v) == "table" then
       destination[k] = copyTables({}, v, valuesTable[k])
     else
       destination[k] = valuesTable[k]
@@ -416,20 +416,20 @@ local function checkSubjectAndTargetRecursively(subject, target, path)
   for k, targetValue in pairs(target) do
     targetType, newPath = type(targetValue), copyTables({}, path)
     table.insert(newPath, tostring(k))
-    if targetType == 'number' then
+    if targetType == "number" then
       assert(
-        type(subject[k]) == 'number',
+        type(subject[k]) == "number",
         "Parameter '"
-          .. table.concat(newPath, '/')
+          .. table.concat(newPath, "/")
           .. "' is missing from subject or isn't a number"
       )
-    elseif targetType == 'table' then
+    elseif targetType == "table" then
       checkSubjectAndTargetRecursively(subject[k], targetValue, newPath)
     else
       assert(
-        targetType == 'number',
+        targetType == "number",
         "Parameter '"
-          .. table.concat(newPath, '/')
+          .. table.concat(newPath, "/")
           .. "' must be a number or table of numbers"
       )
     end
@@ -440,30 +440,30 @@ local function checkNewParams(initial, duration, subject, target, easing)
   -- assert(type(initial) == 'number' and duration > 0, "duration must be a positive number. Was " .. tostring(duration))
   -- assert(type(duration) == 'number' and duration > 0, "duration must be a positive number. Was " .. tostring(duration))
   assert(
-    type(easing) == 'function',
-    'easing must be a function. Was ' .. tostring(easing)
+    type(easing) == "function",
+    "easing must be a function. Was " .. tostring(easing)
   )
 
   if subject and target then
     local tsubject = type(subject)
     assert(
-      tsubject == 'table' or tsubject == 'userdata',
-      'subject must be a table or userdata. Was ' .. tostring(subject)
+      tsubject == "table" or tsubject == "userdata",
+      "subject must be a table or userdata. Was " .. tostring(subject)
     )
     assert(
-      type(target) == 'table',
-      'target must be a table. Was ' .. tostring(target)
+      type(target) == "table",
+      "target must be a table. Was " .. tostring(target)
     )
     checkSubjectAndTargetRecursively(subject, target)
   end
 end
 
 local function getEasingFunction(easing)
-  easing = easing or 'linear'
-  if type(easing) == 'string' then
+  easing = easing or "linear"
+  if type(easing) == "string" then
     local name = easing
     easing = tween.easing[name]
-    if type(easing) ~= 'function' then
+    if type(easing) ~= "function" then
       error("The easing function name '" .. name .. "' is invalid")
     end
   end
@@ -480,7 +480,7 @@ local function performEasingOnSubject(
 )
   local t, b, c, d
   for k, v in pairs(target) do
-    if type(v) == 'table' then
+    if type(v) == "table" then
       performEasingOnSubject(subject[k], v, initial[k], clock, duration, easing)
     else
       t, b, c, d = clock, initial[k], v - initial[k], duration
@@ -490,10 +490,10 @@ local function performEasingOnSubject(
 end
 
 local function performEasing(table, initial, target, clock, duration, easing)
-  if type(target) == 'table' then
+  if type(target) == "table" then
     local t, b, c, d
     for k, v in pairs(target) do
-      if type(v) == 'table' then
+      if type(v) == "table" then
         table[k] = {}
         performEasing(table[k], initial[k], v, clock, duration, easing)
       else
@@ -513,7 +513,7 @@ end
 local Tween = {}
 
 function Tween:set(clock)
-  assert(type(clock) == 'number', 'clock must be a positive number or 0')
+  assert(type(clock) == "number", "clock must be a positive number or 0")
 
   if self.subject and self.initial == 0 then
     self.initial = copyTables({}, self.target, self.subject)
@@ -559,7 +559,7 @@ function Tween:set(clock)
 end
 
 function Tween:update(dt)
-  assert(type(dt) == 'number', 'dt must be a number')
+  assert(type(dt) == "number", "dt must be a number")
   return self:set(self.clock + dt)
 end
 

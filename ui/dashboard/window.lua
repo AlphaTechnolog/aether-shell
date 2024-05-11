@@ -1,10 +1,10 @@
-local wibox = require('wibox')
-local awful = require('awful')
-local gtimer = require('gears.timer')
-local animation = require('framework.animation')
-local utils = require('framework.utils')()
-local oop = require('framework.oop')
-local beautiful = require('beautiful')
+local wibox = require("wibox")
+local awful = require("awful")
+local gtimer = require("gears.timer")
+local animation = require("framework.animation")
+local utils = require("framework.utils")()
+local oop = require("framework.oop")
+local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
 local window = {}
@@ -17,8 +17,8 @@ function window:constructor(s)
 end
 
 local WindowPosition = {
-  Opened = 'Opened',
-  Closed = 'Closed',
+  Opened = "Opened",
+  Closed = "Closed",
 }
 
 local preferred_dimensions = {
@@ -69,9 +69,9 @@ function window:get_widget()
       margins = dpi(7),
       {
         widget = wibox.widget.textbox,
-        markup = 'hello',
-        align = 'center',
-        valign = 'center',
+        markup = "hello",
+        align = "center",
+        valign = "center",
       },
     },
   })
@@ -101,9 +101,9 @@ function window:make_popup()
 end
 
 local WindowStatus = {
-  Opening = 'Opening',
-  Closing = 'Closing',
-  Idle = 'Idle',
+  Opening = "Opening",
+  Closing = "Closing",
+  Idle = "Idle",
 }
 
 function window:create_animations()
@@ -124,7 +124,7 @@ function window:create_animations()
       self.dashboard.y = pos.y
     end,
     signals = {
-      ['ended'] = function()
+      ["ended"] = function()
         if self.dashboard.status == WindowStatus.Closing then
           self.dashboard.visible = false
         end
@@ -189,7 +189,7 @@ end
 function window:subscriptions()
   -- this is prolly called by the dock who wants to claim the used
   -- space when it gets opened by the user
-  self:connect_signal('request::update_position', function()
+  self:connect_signal("request::update_position", function()
     if self.dashboard.status ~= WindowStatus.Idle then
       return
     end

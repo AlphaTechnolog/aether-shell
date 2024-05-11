@@ -1,14 +1,14 @@
-local wibox = require('wibox')
-local gtimer = require('gears.timer')
-local gshape = require('gears.shape')
-local awful = require('awful')
-local hoverable = require('ui.guards.hoverable')
-local animation = require('framework.animation')
-local color = require('framework.color')
-local oop = require('framework.oop')
-local utils = require('framework.utils')()
-local icon_theme = require('framework.icon-theme')()
-local beautiful = require('beautiful')
+local wibox = require("wibox")
+local gtimer = require("gears.timer")
+local gshape = require("gears.shape")
+local awful = require("awful")
+local hoverable = require("ui.guards.hoverable")
+local animation = require("framework.animation")
+local color = require("framework.color")
+local oop = require("framework.oop")
+local utils = require("framework.utils")()
+local icon_theme = require("framework.icon-theme")()
+local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
 local taglist = {}
@@ -24,8 +24,8 @@ local function launcher()
       margins = utils:xmargins(4, 4, 7, 7),
       {
         widget = wibox.widget.textbox,
-        font = beautiful.fonts:choose('icons', 12),
-        markup = '',
+        font = beautiful.fonts:choose("icons", 12),
+        markup = "",
       },
     },
   }))
@@ -39,7 +39,7 @@ local function launcher()
 
   -- TODO: Reveal custom launcher
   container:add_button(utils:left_click(function()
-    print('hello world')
+    print("hello world")
   end))
 
   return container
@@ -56,7 +56,7 @@ local function mktaglist(s)
       spacing = dpi(6),
     },
     widget_template = {
-      id = 'background-element',
+      id = "background-element",
       widget = wibox.container.background,
       shape = utils:srounded(dpi(7)),
       {
@@ -72,10 +72,10 @@ local function mktaglist(s)
               margins = utils:xmargins(0, 0, 6, 6),
               {
                 widget = wibox.container.place,
-                valign = 'center',
-                halign = 'center',
+                valign = "center",
+                halign = "center",
                 {
-                  id = 'clients-layout-element',
+                  id = "clients-layout-element",
                   layout = wibox.layout.fixed.horizontal,
                   hexpand = true,
                   spacing = dpi(6),
@@ -85,10 +85,10 @@ local function mktaglist(s)
           },
           {
             widget = wibox.container.place,
-            valign = 'center',
-            halign = 'center',
+            valign = "center",
+            halign = "center",
             {
-              id = 'indicator-element',
+              id = "indicator-element",
               widget = wibox.container.background,
               bg = beautiful.colors.accent,
               shape = gshape.rounded_bar,
@@ -99,10 +99,10 @@ local function mktaglist(s)
         },
       },
       create_callback = function(self, tag)
-        local background = self:get_children_by_id('background-element')[1]
-        local indicator = self:get_children_by_id('indicator-element')[1]
+        local background = self:get_children_by_id("background-element")[1]
+        local indicator = self:get_children_by_id("indicator-element")[1]
         local clients_layout =
-          self:get_children_by_id('clients-layout-element')[1]
+          self:get_children_by_id("clients-layout-element")[1]
 
         background:add_button(utils:left_click(function()
           gtimer.delayed_call(function()
@@ -142,7 +142,7 @@ local function mktaglist(s)
         function self:update_clients_layout()
           if not clients_layout then
             print(
-              '[warning] cannot update clients layout in taglist for index '
+              "[warning] cannot update clients layout in taglist for index "
                 .. tag.index
             )
             return
@@ -154,20 +154,20 @@ local function mktaglist(s)
 
           if not clients or #clients == 0 then
             local numbers =
-              { 'I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX' }
+              { "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX" }
             return clients_layout:add(wibox.widget({
               widget = wibox.widget.textbox,
               markup = numbers[tag.index],
-              valign = 'center',
-              align = 'center',
+              valign = "center",
+              align = "center",
             }))
           end
 
           for _, client in ipairs(clients) do
             clients_layout:add(wibox.widget({
               widget = wibox.widget.imagebox,
-              valign = 'center',
-              halign = 'center',
+              valign = "center",
+              halign = "center",
               forced_width = dpi(16),
               forced_height = dpi(16),
               image = icon_theme:get_client_icon_path(client),

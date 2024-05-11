@@ -1,4 +1,4 @@
-local oop = require('framework.oop')
+local oop = require("framework.oop")
 
 local _fs = {}
 
@@ -16,12 +16,12 @@ end
 
 -- just a wrapper for `folder_exists` which adds a leading `/`
 function _fs:isdir(path)
-  return self:folder_exists(path .. '/')
+  return self:folder_exists(path .. "/")
 end
 
 -- a wrapper for shell `mkdir` command
 function _fs:mkdir(path)
-  os.execute('mkdir ' .. path)
+  os.execute("mkdir " .. path)
 end
 
 -- creates a folder if it doesn't exists
@@ -33,7 +33,7 @@ end
 
 -- checks if a file exists or not
 function _fs:isfile(path)
-  local file = io.open(path, 'r')
+  local file = io.open(path, "r")
 
   if file ~= nil then
     file:close()
@@ -45,7 +45,7 @@ end
 
 -- creates a new file by using the shell `touch` command
 function _fs:touch(path)
-  os.execute('touch ' .. path)
+  os.execute("touch " .. path)
 end
 
 -- creates a file if it doesn't exists
@@ -61,13 +61,13 @@ function _fs:read(path)
     return nil
   end
 
-  local file = io.open(path, 'r')
+  local file = io.open(path, "r")
 
   if not file then
-    error('cannot open ' .. path)
+    error("cannot open " .. path)
   end
 
-  local content = file:read('*a')
+  local content = file:read("*a")
 
   file:close()
 

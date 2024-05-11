@@ -1,20 +1,20 @@
-local wibox = require('wibox')
-local awful = require('awful')
-local gtimer = require('gears.timer')
-local animation = require('framework.animation')
-local oop = require('framework.oop')
-local utils = require('framework.utils')()
-local beautiful = require('beautiful')
+local wibox = require("wibox")
+local awful = require("awful")
+local gtimer = require("gears.timer")
+local animation = require("framework.animation")
+local oop = require("framework.oop")
+local utils = require("framework.utils")()
+local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
-local Tasklist = require('ui.dock.modules.tasklist')
+local Tasklist = require("ui.dock.modules.tasklist")
 
 local window = {}
 
 local WINDOW_STATUS = {
-  HIDDING = 'HIDDING',
-  SHOWING = 'SHOWING',
-  IDLE = 'IDLE',
+  HIDDING = "HIDDING",
+  SHOWING = "SHOWING",
+  IDLE = "IDLE",
 }
 
 function window:constructor(s)
@@ -42,14 +42,14 @@ function window:get_widget()
     },
   })
 
-  container:connect_signal('mouse::enter', function()
+  container:connect_signal("mouse::enter", function()
     self.forced_opened = true
-    self:emit_signal('update_position')
+    self:emit_signal("update_position")
   end)
 
-  container:connect_signal('mouse::leave', function()
+  container:connect_signal("mouse::leave", function()
     self.forced_opened = false
-    self:emit_signal('update_position')
+    self:emit_signal("update_position")
   end)
 
   return container
@@ -78,16 +78,16 @@ function window:make_widget()
 
   function self.popup:repositionate(window)
     local function calculate()
-      window:emit_signal('update_position')
+      window:emit_signal("update_position")
     end
 
     calculate()
 
-    self:connect_signal('property::width', function(_)
+    self:connect_signal("property::width", function(_)
       calculate()
     end)
 
-    self:connect_signal('property::height', function(_)
+    self:connect_signal("property::height", function(_)
       calculate()
     end)
   end
@@ -110,7 +110,7 @@ function window:make_animation()
       self.popup.y = pos.y
     end,
     signals = {
-      ['ended'] = function()
+      ["ended"] = function()
         self.status = WINDOW_STATUS.IDLE
       end,
     },
@@ -189,17 +189,17 @@ function window:apply_clients_listeners()
         self:show_popup()
       end
 
-      self.s.dashboard:emit_signal('request::update_position')
+      self.s.dashboard:emit_signal("request::update_position")
     end)
   end
 
-  Client.connect_signal('list', update_state)
-  Client.connect_signal('property::active', update_state)
-  Client.connect_signal('property::floating', update_state)
-  Client.connect_signal('property::geometry', update_state)
-  Tag.connect_signal('property::selected', update_state)
-  Tag.connect_signal('property::layout', update_state)
-  self:connect_signal('update_position', update_state)
+  Client.connect_signal("list", update_state)
+  Client.connect_signal("property::active", update_state)
+  Client.connect_signal("property::floating", update_state)
+  Client.connect_signal("property::geometry", update_state)
+  Tag.connect_signal("property::selected", update_state)
+  Tag.connect_signal("property::layout", update_state)
+  self:connect_signal("update_position", update_state)
 
   update_state()
 end

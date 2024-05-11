@@ -1,24 +1,24 @@
 -- huge thanks to the bling project...
 
-local lgi = require('lgi')
+local lgi = require("lgi")
 local Gio = lgi.Gio
-local Gtk = lgi.require('Gtk', '3.0')
-local gobject = require('gears.object')
-local gtable = require('gears.table')
+local Gtk = lgi.require("Gtk", "3.0")
+local gobject = require("gears.object")
+local gtable = require("gears.table")
 local setmetatable = setmetatable
 local ipairs = ipairs
 
 local icon_theme = { mt = {} }
 
 local name_lookup = {
-  ['jetbrains-studio'] = 'android-studio',
+  ["jetbrains-studio"] = "android-studio",
 }
 
 local function get_icon_by_pid_command(self, client, apps)
   local pid = client.pid
   if pid ~= nil then
-    local handle = io.popen(string.format('ps -p %d -o comm=', pid))
-    local pid_command = handle:read('*a'):gsub('^%s*(.-)%s*$', '%1')
+    local handle = io.popen(string.format("ps -p %d -o comm=", pid))
+    local pid_command = handle:read("*a"):gsub("^%s*(.-)%s*$", "%1")
     handle:close()
 
     for _, app in ipairs(apps) do
@@ -47,15 +47,15 @@ local function get_icon_by_class(self, client, apps)
     local class = name_lookup[client.class] or client.class:lower()
 
     -- Try to remove dashes
-    local class_1 = class:gsub('[%-]', '')
+    local class_1 = class:gsub("[%-]", "")
 
     -- Try to replace dashes with dot
-    local class_2 = class:gsub('[%-]', '.')
+    local class_2 = class:gsub("[%-]", ".")
 
     -- Try to match only the first word
-    local class_3 = class:match('(.-)-') or class
-    class_3 = class_3:match('(.-)%.') or class_3
-    class_3 = class_3:match('(.-)%s+') or class_3
+    local class_3 = class:match("(.-)-") or class
+    class_3 = class_3:match("(.-)%.") or class_3
+    class_3 = class_3:match("(.-)%s+") or class_3
 
     local possible_icon_names = { class, class_3, class_2, class_1 }
     for _, app in ipairs(apps) do
@@ -80,7 +80,7 @@ local function get_cached_icon(self, client)
   local icons = icons_cache.icons
 
   if not icons then
-    print('[error] cannot fetch icons')
+    print("[error] cannot fetch icons")
     return
   end
 
@@ -103,9 +103,9 @@ local function register_cached_icon(classname, iconpath)
 
   if not ok then
     print(
-      '[error] unable to update icons when trying to add '
+      "[error] unable to update icons when trying to add "
         .. classname
-        .. ' to icons cache! '
+        .. " to icons cache! "
         .. tostring(err)
     )
     return
@@ -124,12 +124,12 @@ function icon_theme:get_client_icon_path(client)
   local resolved_icon = get_icon_by_pid_command(self, client, apps)
     or get_icon_by_icon_name(self, client, apps)
     or get_icon_by_class(self, client, apps)
-    or (type(client.icon) == 'string' and client.icon or nil)
+    or (type(client.icon) == "string" and client.icon or nil)
     or self:choose_icon({
-      'window',
-      'window-manager',
-      'xfwm4-default',
-      'window_list',
+      "window",
+      "window-manager",
+      "xfwm4-default",
+      "window_list",
     })
 
   register_cached_icon(client.class, resolved_icon)
@@ -146,12 +146,12 @@ function icon_theme:choose_icon(icons_names)
     end
   end
 
-  return ''
+  return ""
 end
 
 function icon_theme:get_gicon_path(gicon)
   if gicon == nil then
-    return ''
+    return ""
   end
 
   local icon_info = self.gtk_theme:lookup_by_gicon(gicon, self.icon_size, 0)
@@ -162,7 +162,7 @@ function icon_theme:get_gicon_path(gicon)
     end
   end
 
-  return ''
+  return ""
 end
 
 function icon_theme:get_icon_path(icon_name)
@@ -174,7 +174,7 @@ function icon_theme:get_icon_path(icon_name)
     end
   end
 
-  return ''
+  return ""
 end
 
 local function new(theme_name, icon_size)

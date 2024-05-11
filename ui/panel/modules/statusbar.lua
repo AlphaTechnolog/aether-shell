@@ -1,13 +1,13 @@
-local wibox = require('wibox')
-local awful = require('awful')
-local gtimer = require('gears.timer')
-local oop = require('framework.oop')
-local utils = require('framework.utils')()
-local beautiful = require('beautiful')
+local wibox = require("wibox")
+local awful = require("awful")
+local gtimer = require("gears.timer")
+local oop = require("framework.oop")
+local utils = require("framework.utils")()
+local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
-local Network = require('ui.panel.modules.icons.network')
-local Volume = require('ui.panel.modules.icons.volume')
+local Network = require("ui.panel.modules.icons.network")
+local Volume = require("ui.panel.modules.icons.volume")
 
 local statusbar = {
   s = nil,
@@ -30,7 +30,7 @@ local function clock()
     autostart = true,
     single_shot = false,
     callback = function()
-      text:set_markup_silently(os.date('%I:%M %p'))
+      text:set_markup_silently(os.date("%I:%M %p"))
     end,
   })
 
@@ -39,10 +39,10 @@ local function clock()
     fg = beautiful.colors.accent,
     {
       widget = wibox.widget.textbox,
-      markup = '',
-      font = beautiful.fonts:choose('icons', 10),
-      valign = 'center',
-      align = 'center',
+      markup = "",
+      font = beautiful.fonts:choose("icons", 10),
+      valign = "center",
+      align = "center",
     },
   })
 

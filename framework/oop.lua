@@ -1,5 +1,5 @@
-local gtable = require('gears.table')
-local gobject = require('gears.object')
+local gtable = require("gears.table")
+local gobject = require("gears.object")
 
 local setmetatable = setmetatable
 

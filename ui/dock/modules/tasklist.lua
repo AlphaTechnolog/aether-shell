@@ -1,16 +1,16 @@
 -- TODO: This module could be improved to add pinned dock entries, grouped dock entries
 -- drag and drop new clients, etc...
 
-local wibox = require('wibox')
-local gshape = require('gears.shape')
-local gtimer = require('gears.timer')
-local hoverable = require('ui.guards.hoverable')
-local utils = require('framework.utils')()
-local oop = require('framework.oop')
-local animation = require('framework.animation')
-local color = require('framework.color')
-local icon_theme = require('framework.icon-theme')()
-local beautiful = require('beautiful')
+local wibox = require("wibox")
+local gshape = require("gears.shape")
+local gtimer = require("gears.timer")
+local hoverable = require("ui.guards.hoverable")
+local utils = require("framework.utils")()
+local oop = require("framework.oop")
+local animation = require("framework.animation")
+local color = require("framework.color")
+local icon_theme = require("framework.icon-theme")()
+local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
 local tasklist = {
@@ -32,10 +32,10 @@ local function Launcher(self)
       margins = utils:xmargins(6, 6, 10, 10),
       {
         widget = wibox.widget.textbox,
-        markup = '',
-        font = beautiful.fonts:choose('icons', 24),
-        valign = 'center',
-        align = 'center',
+        markup = "",
+        font = beautiful.fonts:choose("icons", 24),
+        valign = "center",
+        align = "center",
       },
     },
   }))
@@ -76,18 +76,18 @@ local function ClientButton(client)
         {
           widget = wibox.widget.imagebox,
           image = icon_theme:get_client_icon_path(client),
-          valign = 'center',
-          halign = 'center',
+          valign = "center",
+          halign = "center",
           forced_width = dpi(42),
           forced_height = dpi(42),
         },
       },
       {
         widget = wibox.container.place,
-        valign = 'center',
-        halign = 'center',
+        valign = "center",
+        halign = "center",
         {
-          id = 'indicator-element',
+          id = "indicator-element",
           widget = wibox.container.background,
           bg = beautiful.colors.background,
           forced_height = dpi(4),
@@ -98,11 +98,11 @@ local function ClientButton(client)
     },
   })
 
-  local indicator = container:get_children_by_id('indicator-element')[1]
+  local indicator = container:get_children_by_id("indicator-element")[1]
 
   if not indicator then
     print(
-      '[warning] cannot find indicator in tasklist for client ' .. client.title
+      "[warning] cannot find indicator in tasklist for client " .. client.title
     )
     return
   end
@@ -146,10 +146,10 @@ local function ClientButton(client)
     end
 
     set_value()
-    client:connect_signal('property::' .. key, set_value)
+    client:connect_signal("property::" .. key, set_value)
   end
 
-  subscribed('active', function()
+  subscribed("active", function()
     container.animation:set_color({
       indicator_width = client.active and 22 or 4,
       indicator = client.active and beautiful.colors.accent
@@ -159,7 +159,7 @@ local function ClientButton(client)
     })
   end)
 
-  container:connect_signal('mouse::enter', function()
+  container:connect_signal("mouse::enter", function()
     if client.active then
       container.animation:set_color({
         bg = beautiful.colors.light_black_15,
@@ -173,7 +173,7 @@ local function ClientButton(client)
     end
   end)
 
-  container:connect_signal('mouse::leave', function()
+  container:connect_signal("mouse::leave", function()
     if client.active then
       container.animation:set_color({
         bg = beautiful.colors.light_background_10,
@@ -189,7 +189,7 @@ local function ClientButton(client)
 
   container:add_button(utils:left_click(function()
     client:activate({
-      context = 'dock',
+      context = "dock",
       raise = true,
     })
   end))
@@ -224,10 +224,10 @@ function tasklist:render()
 
   cb()
 
-  Client.connect_signal('list', cb)
-  Client.connect_signal('swapped', cb)
-  Client.connect_signal('property::active', cb)
-  Tag.connect_signal('property::selected', cb)
+  Client.connect_signal("list", cb)
+  Client.connect_signal("swapped", cb)
+  Client.connect_signal("property::active", cb)
+  Tag.connect_signal("property::selected", cb)
 
   return self.layout
 end

@@ -1,9 +1,9 @@
-local json = require('extern.json.json')
-local gfs = require('gears.filesystem')
-local Meta = require('meta')
-local oop = require('framework.oop')
-local Fs = require('framework.fs-simple')
-local utils = require('framework.utils')()
+local json = require("extern.json.json")
+local gfs = require("gears.filesystem")
+local Meta = require("meta")
+local oop = require("framework.oop")
+local Fs = require("framework.fs-simple")
+local utils = require("framework.utils")()
 
 local _manager = {}
 
@@ -12,13 +12,13 @@ local DEFAULT_CACHED_ICONS = {
 }
 
 local DEFAULT_USER_LIKES = {
-  navigator = 'google-chrome',
-  terminal = 'alacritty',
-  explorer = 'thunar',
-  launcher = 'rofi -show drun',
-  modkey = 'Mod4',
+  navigator = "google-chrome",
+  terminal = "alacritty",
+  explorer = "thunar",
+  launcher = "rofi -show drun",
+  modkey = "Mod4",
   wallpaper = {
-    filename = gfs.get_configuration_dir() .. '/assets/wallpaper.png',
+    filename = gfs.get_configuration_dir() .. "/assets/wallpaper.png",
     rounded_corners = {
       roundness = 12,
       top_left = true,
@@ -46,19 +46,19 @@ end
 
 function _manager:constructor(_)
   self.fs = Fs()
-  self.config_dir = os.getenv('HOME') .. '/.config/' .. Meta.Project.id
-  self.cache_dir = os.getenv('HOME') .. '/.cache/' .. Meta.Project.id
+  self.config_dir = os.getenv("HOME") .. "/.config/" .. Meta.Project.id
+  self.cache_dir = os.getenv("HOME") .. "/.cache/" .. Meta.Project.id
 
-  self.icons_cache = self.cache_dir .. '/icons-cache.json'
-  self.user_likes = self.config_dir .. '/user-likes.json'
-  self.autostart = self.config_dir .. '/autostart.json'
-  self.general_behavior = self.config_dir .. '/general-behavior.json'
+  self.icons_cache = self.cache_dir .. "/icons-cache.json"
+  self.user_likes = self.config_dir .. "/user-likes.json"
+  self.autostart = self.config_dir .. "/autostart.json"
+  self.general_behavior = self.config_dir .. "/general-behavior.json"
 
   self.files = {
-    ['icons_cache'] = register_value(self.icons_cache, DEFAULT_CACHED_ICONS),
-    ['user_likes'] = register_value(self.user_likes, DEFAULT_USER_LIKES),
-    ['autostart'] = register_value(self.autostart, DEFAULT_AUTOSTART),
-    ['general_behavior'] = register_value(
+    ["icons_cache"] = register_value(self.icons_cache, DEFAULT_CACHED_ICONS),
+    ["user_likes"] = register_value(self.user_likes, DEFAULT_USER_LIKES),
+    ["autostart"] = register_value(self.autostart, DEFAULT_AUTOSTART),
+    ["general_behavior"] = register_value(
       self.general_behavior,
       DEFAULT_GENERAL_BEHAVIOR
     ),
@@ -71,10 +71,10 @@ end
 -- TODO: Figure out a way to prettify the json
 function _manager:write_into(filename, content_table)
   local content = json.encode(content_table)
-  local file = io.open(filename, 'w')
+  local file = io.open(filename, "w")
 
   if not file then
-    error('cannot open the file ' .. filename)
+    error("cannot open the file " .. filename)
   end
 
   file:write(content)
@@ -97,7 +97,7 @@ end
 
 function _manager:parse(path)
   if not self.fs:isfile(path) then
-    error(path .. ' does not exists, did the caller call scaffold_if_needed()?')
+    error(path .. " does not exists, did the caller call scaffold_if_needed()?")
   end
 
   return json.decode(self.fs:read(path))
@@ -109,7 +109,7 @@ end
 --- end
 function _manager:make_parsing_functions_shortcuts()
   for name, content in pairs(self.files) do
-    self['parse_' .. name] = function(self)
+    self["parse_" .. name] = function(self)
       return self:parse(content.filename)
     end
   end
@@ -118,8 +118,8 @@ end
 -- TODO: Use a more sophisticated error instead of `error()`
 function _manager:inject_helpers(filename_key, tbl)
   local _injected_functions = {
-    'get_key',
-    'refresh_content',
+    "get_key",
+    "refresh_content",
   }
 
   local manager_self = self
@@ -138,12 +138,12 @@ function _manager:inject_helpers(filename_key, tbl)
   local filename = resolve_filename()
 
   if filename == nil then
-    error('invalid given filename key ' .. filename_key)
+    error("invalid given filename key " .. filename_key)
   end
 
   function tbl:get_key(key)
     if not utils:key_in_tbl(key, tbl) then
-      error('cannot get required key ' .. key .. ' from the config files!')
+      error("cannot get required key " .. key .. " from the config files!")
     end
 
     return self[key]
