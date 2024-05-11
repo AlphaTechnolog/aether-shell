@@ -116,12 +116,18 @@ local function ClientButton(client)
       indicator_width = 4,
     },
     update = function(_, pos)
-      if pos.bg then
+      if pos == nil then
+        return
+      end
+
+      if pos.bg ~= nil then
         container.bg = color.rgba_to_hex(pos.bg)
       end
-      if pos.indicator then
+
+      if pos.indicator ~= nil then
         indicator.bg = color.rgba_to_hex(pos.indicator)
       end
+
       if pos.indicator_width ~= nil then
         indicator.forced_width = dpi(pos.indicator_width)
       end
@@ -150,13 +156,15 @@ local function ClientButton(client)
   end
 
   subscribed("active", function()
-    container.animation:set_color({
-      indicator_width = client.active and 22 or 4,
-      indicator = client.active and beautiful.colors.accent
-        or beautiful.colors.background,
-      bg = client.active and beautiful.colors.light_background_10
-        or beautiful.colors.background,
-    })
+    gtimer.delayed_call(function()
+      container.animation:set_color({
+        indicator_width = client.active and 22 or 4,
+        indicator = client.active and beautiful.colors.accent
+          or beautiful.colors.background,
+        bg = client.active and beautiful.colors.light_background_10
+          or beautiful.colors.background,
+      })
+    end)
   end)
 
   container:connect_signal("mouse::enter", function()
@@ -164,11 +172,13 @@ local function ClientButton(client)
       container.animation:set_color({
         bg = beautiful.colors.light_black_15,
         indicator = color.lighten(beautiful.colors.accent, 10),
+        indicator_width = client.active and 22 or 4,
       })
     else
       container.animation:set_color({
         bg = beautiful.colors.light_background_10,
         indicator = beautiful.colors.light_background_10,
+        indicator_width = client.active and 22 or 4,
       })
     end
   end)
@@ -178,11 +188,13 @@ local function ClientButton(client)
       container.animation:set_color({
         bg = beautiful.colors.light_background_10,
         indicator = beautiful.colors.accent,
+        indicator_width = client.active and 22 or 4,
       })
     else
       container.animation:set_color({
         bg = beautiful.colors.background,
         indicator = beautiful.colors.background,
+        indicator_width = client.active and 22 or 4,
       })
     end
   end)
@@ -191,14 +203,27 @@ local function ClientButton(client)
     client:activate({
       context = "dock",
       raise = true,
+      switch_to_tag = true,
     })
   end))
 
   return container
 end
 
+local function get_clients(self)
+  local clients = {}
+
+  for _, tag in ipairs(self.s.tags) do
+    for _, client in ipairs(tag:clients()) do
+      table.insert(clients, client)
+    end
+  end
+
+  return clients
+end
+
 local function update_clients(self)
-  local clients = self.s.selected_tag:clients()
+  local clients = get_clients(self)
 
   self.layout:reset()
   self.layout:add(Launcher(self))

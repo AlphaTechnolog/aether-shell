@@ -77,10 +77,10 @@ theme.fg_systray = theme.fg_normal
 -- \___\___|_||_\___|_| \__,_|_|
 
 theme.useless_gap = dpi(4)
-theme.border_width = dpi(0)
--- theme.border_color_normal = theme.colors.light_hovered_black_15
--- theme.border_color_active = theme.colors.light_hovered_black_15
--- theme.border_color_marked = theme.colors.light_hovered_black_15
+theme.border_width = dpi(1)
+theme.border_color_normal = theme.colors.light_black_10
+theme.border_color_active = theme.colors.light_hovered_black_15
+theme.border_color_marked = theme.colors.light_black_15
 theme.menu_height = dpi(15)
 theme.menu_width = dpi(100)
 theme.icon_theme = "Papirus-Dark"
