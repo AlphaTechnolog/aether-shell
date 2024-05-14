@@ -58,7 +58,7 @@ function theme.colors:apply_shade(key)
 end
 
 -- TODO: Add a popup to customize this color
-theme.colors.accent = theme.colors.yellow
+theme.colors.accent = theme.colors.cyan
 theme.colors.secondary_accent = theme.colors.magenta
 
 local accent_shade = theme.colors:apply_shade("accent")
