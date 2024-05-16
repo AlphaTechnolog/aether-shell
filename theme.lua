@@ -35,18 +35,20 @@ theme.font = theme.fonts:choose("normal", 9)
 -- | (__/ _ \ / _ \ '_(_-<
 -- \___\___/_\___/_| /__/
 
-theme.colors = palette:generate_shades({
-  background = "#131313",
-  foreground = "#b6beca",
-  black = "#202020",
-  hovered_black = "#2c2c2c",
-  red = "#c6797c",
-  green = "#8cc7a9",
-  yellow = "#dcc89f",
-  blue = "#89a8d2",
-  magenta = "#c29eda",
-  cyan = "#8bb8d2",
-  white = "#e0e1e4",
+theme.scheme = "light"
+
+theme.colors = palette:generate_shades(theme.scheme, {
+  background = "#e1e2e7",
+  foreground = "#3760bf",
+  black = "#e9e9ed",
+  hovered_black = "#a1a6c5",
+  red = "#f52a65",
+  green = "#587539",
+  yellow = "#8c6c3e",
+  blue = "#2e7de9",
+  magenta = "#9854f1",
+  cyan = "#007197",
+  white = "#6182b0",
 })
 
 -- transparent bg
@@ -58,8 +60,8 @@ function theme.colors:apply_shade(key)
 end
 
 -- TODO: Add a popup to customize this color
-theme.colors.accent = theme.colors.cyan
-theme.colors.secondary_accent = theme.colors.magenta
+theme.colors.accent = theme.colors.blue
+theme.colors.secondary_accent = theme.colors.cyan
 
 local accent_shade = theme.colors:apply_shade("accent")
 theme.colors.accent_shade = accent_shade.regular
@@ -77,7 +79,7 @@ theme.fg_systray = theme.fg_normal
 -- \___\___|_||_\___|_| \__,_|_|
 
 theme.useless_gap = dpi(4)
-theme.border_width = dpi(1)
+theme.border_width = dpi(theme.scheme == "light" and 0 or 1)
 theme.border_color_normal = theme.colors.light_black_10
 theme.border_color_active = theme.colors.light_hovered_black_15
 theme.border_color_marked = theme.colors.light_black_15
