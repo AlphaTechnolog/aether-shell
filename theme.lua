@@ -35,20 +35,20 @@ theme.font = theme.fonts:choose("normal", 9)
 -- | (__/ _ \ / _ \ '_(_-<
 -- \___\___/_\___/_| /__/
 
-theme.scheme = "light"
+theme.scheme = "dark"
 
 theme.colors = palette:generate_shades(theme.scheme, {
-  background = "#e1e2e7",
-  foreground = "#3760bf",
-  black = "#e9e9ed",
-  hovered_black = "#a1a6c5",
-  red = "#f52a65",
-  green = "#587539",
-  yellow = "#8c6c3e",
-  blue = "#2e7de9",
-  magenta = "#9854f1",
-  cyan = "#007197",
-  white = "#6182b0",
+  background = "#131313",
+  foreground = "#b6beca",
+  black = "#202020",
+  hovered_black = "#2c2c2c",
+  red = "#c6797c",
+  green = "#8cc7a9",
+  yellow = "#dcc89f",
+  blue = "#89a8d2",
+  magenta = "#c29eda",
+  cyan = "#8bb8d2",
+  white = "#e0e1e4",
 })
 
 -- transparent bg
