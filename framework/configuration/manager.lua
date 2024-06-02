@@ -17,6 +17,26 @@ local DEFAULT_USER_LIKES = {
   explorer = "thunar",
   launcher = "rofi -show drun",
   modkey = "Mod4",
+  theme = {
+    scheme = "dark",
+    accents = {
+      primary = "blue",
+      secondary = "cyan",
+    },
+    colors = {
+      background = "#131313",
+      foreground = "#b6beca",
+      black = "#202020",
+      hovered_black = "#2c2c2c",
+      red = "#c6797c",
+      green = "#8cc7a9",
+      yellow = "#dcc89f",
+      blue = "#89a8d2",
+      magenta = "#c29eda",
+      cyan = "#8bb8d2",
+      white = "#e0e1e4",
+    },
+  },
   wallpaper = {
     filename = gfs.get_configuration_dir() .. "/assets/wallpaper.png",
     rounded_corners = {

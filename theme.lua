@@ -35,35 +35,29 @@ theme.font = theme.fonts:choose("normal", 9)
 -- | (__/ _ \ / _ \ '_(_-<
 -- \___\___/_\___/_| /__/
 
-theme.scheme = "dark"
+local user_likes = Configuration.UserLikes or {};
 
-theme.colors = palette:generate_shades(theme.scheme, {
-  background = "#131313",
-  foreground = "#b6beca",
-  black = "#202020",
-  hovered_black = "#2c2c2c",
-  red = "#c6797c",
-  green = "#8cc7a9",
-  yellow = "#dcc89f",
-  blue = "#89a8d2",
-  magenta = "#c29eda",
-  cyan = "#8bb8d2",
-  white = "#e0e1e4",
-})
+theme.colors = palette:generate_shades(
+  user_likes.theme.scheme,
+  user_likes.theme.colors
+)
 
 -- transparent bg
 theme.colors.transparent = theme.colors.background .. "00"
 
 -- accent color
 function theme.colors:apply_shade(key)
-  return { regular = self[key] .. "1A", bright = self[key] .. "33" }
+  return {
+    regular = self[key] .. '1A',
+    bright = self[key] .. '33'
+  }
 end
 
--- TODO: Add a popup to customize this color
-theme.colors.accent = theme.colors.blue
-theme.colors.secondary_accent = theme.colors.cyan
+theme.colors.accent = theme.colors[user_likes.theme.accents.primary]
+theme.colors.secondary_accent = theme.colors[user_likes.theme.accents.secondary]
 
 local accent_shade = theme.colors:apply_shade("accent")
+
 theme.colors.accent_shade = accent_shade.regular
 theme.colors.light_accent_shade = accent_shade.bright
 
@@ -79,7 +73,7 @@ theme.fg_systray = theme.fg_normal
 -- \___\___|_||_\___|_| \__,_|_|
 
 theme.useless_gap = dpi(4)
-theme.border_width = dpi(theme.scheme == "light" and 0 or 1)
+theme.border_width = dpi(user_likes.theme.scheme == "light" and 0 or 1)
 theme.border_color_normal = theme.colors.light_black_10
 theme.border_color_active = theme.colors.light_hovered_black_15
 theme.border_color_marked = theme.colors.light_black_15
