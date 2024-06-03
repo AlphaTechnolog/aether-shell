@@ -74,7 +74,7 @@ theme.fg_systray = theme.fg_normal
 
 theme.useless_gap = dpi(4)
 theme.border_width = dpi(user_likes.theme.scheme == "light" and 0 or 1)
-theme.border_color_normal = theme.colors.light_black_10
+theme.border_color_normal = theme.colors.light_black_15
 theme.border_color_active = theme.colors.light_hovered_black_15
 theme.border_color_marked = theme.colors.light_black_15
 theme.menu_height = dpi(15)
