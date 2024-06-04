@@ -1,4 +1,5 @@
 local wibox = require("wibox")
+local utils = require("framework.utils")()
 local oop = require("framework.oop")
 local awful = require("awful")
 local gshape = require("gears.shape")
@@ -121,7 +122,10 @@ Client.connect_signal("request::titlebars", function(c)
 
     set_color = function (self, new_color)
       self.bg = new_color
-      self.border.bg = color.lighten(new_color, 5)
+
+      self.border.bg = utils:color_adaptive_shade(
+        new_color, 5
+      )
     end,
 
     {

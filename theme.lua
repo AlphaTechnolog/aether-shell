@@ -37,6 +37,8 @@ theme.font = theme.fonts:choose("normal", 9)
 
 local user_likes = Configuration.UserLikes or {};
 
+theme.scheme = user_likes.theme.scheme
+
 theme.colors = palette:generate_shades(
   user_likes.theme.scheme,
   user_likes.theme.colors

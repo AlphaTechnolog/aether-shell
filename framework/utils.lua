@@ -1,7 +1,9 @@
 local awful = require("awful")
 local gshape = require("gears.shape")
 local oop = require("framework.oop")
-local dpi = require("beautiful.xresources").apply_dpi
+local color = require("framework.color")
+local beautiful = require("beautiful")
+local dpi = beautiful.xresources.apply_dpi
 
 local _utils = {}
 
@@ -96,6 +98,14 @@ end
 
 function _utils:min(a, b)
   return a < b and a or b
+end
+
+function _utils:color_adaptive_shade(hex_color, amount)
+  if beautiful.scheme == "light" then
+    return color.darken(hex_color, amount * 2)
+  else
+    return color.lighten(hex_color, amount)
+  end
 end
 
 return oop(_utils)

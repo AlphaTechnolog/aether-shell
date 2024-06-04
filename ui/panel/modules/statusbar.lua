@@ -67,6 +67,8 @@ local function layoutbox(self)
   return wibox.widget({
     widget = wibox.container.margin,
     margins = dpi(4),
+    -- disabling for light mode (for now)
+    visible = beautiful.scheme == "dark",
     {
       widget = awful.widget.layoutbox,
       screen = self.s,
