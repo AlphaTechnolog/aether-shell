@@ -1,5 +1,5 @@
 require("ui.wallpaper")
 require("ui.panel")
-require("ui.dock")
+-- require("ui.dock")
 require("ui.dashboard")
 require("ui.titlebars")

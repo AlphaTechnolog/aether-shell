@@ -10,8 +10,25 @@ local palette = require("framework.palette")()
 local dpi = xresources.apply_dpi
 
 local themes_path = gfs.get_themes_dir()
+local conf_dir = gfs.get_configuration_dir()
+local assets_path = conf_dir .. "assets/"
+local icons_path = assets_path .. "icons/"
 
 local theme = {}
+
+-- distro icon
+theme.distro = icons_path .. io.popen("sh -c '. /etc/os-release; echo $ID'"):read "*l" .. ".svg"
+
+theme.default_distro = icons_path .. "awesome.svg"
+
+-- generic for non supported (atm) distro.
+if gfs.file_readable(theme.distro) ~= true then
+  theme.distro = theme.default_distro
+end
+
+function theme:non_supported_distro_icon()
+  return theme.distro == theme.default_distro
+end
 
 --    ___                _
 -- | __|__ _ _| |_ ___

@@ -4,8 +4,8 @@ local oop = require("framework.oop")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
-local Music = require("ui.panel.modules.music")
 local Taglist = require("ui.panel.modules.taglist")
+local Tasklist = require("ui.panel.modules.tasklist")
 local Statusbar = require("ui.panel.modules.statusbar")
 
 local _window = {}
@@ -16,7 +16,7 @@ function _window:constructor(s)
 end
 
 function _window:make_window()
-  local height = dpi(38)
+  local height = dpi(40)
 
   self.popup = awful.popup({
     type = "dock",
@@ -24,7 +24,7 @@ function _window:make_window()
     bg = beautiful.colors.transparent,
     fg = beautiful.colors.foreground,
     x = self.s.geometry.x,
-    y = self.s.geometry.y,
+    y = self.s.geometry.y + self.s.geometry.height - height,
     minimum_width = self.s.geometry.width,
     maximum_width = self.s.geometry.width,
     minimum_height = height,
@@ -39,7 +39,7 @@ function _window:make_window()
           {
             layout = wibox.layout.fixed.horizontal,
             spacing = dpi(6),
-            Music():render(),
+            Taglist(self.s):render()
           },
           nil,
           {
@@ -52,14 +52,14 @@ function _window:make_window()
           widget = wibox.container.place,
           halign = "center",
           valign = "center",
-          Taglist(self.s):render(),
+          Tasklist():render()
         },
       },
     }),
   })
 
   self.popup:struts({
-    top = height,
+    bottom = height,
   })
 end
 

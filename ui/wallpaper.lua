@@ -17,7 +17,7 @@ Screen.connect_signal("request::wallpaper", function(s)
       halign = "center",
       {
         widget = wibox.container.margin,
-        top = dpi(38),
+        bottom = dpi(38),
         {
           widget = wibox.widget.imagebox,
           valign = "center",

@@ -19,13 +19,22 @@ function music:render()
     bg = chip_background.bright,
     fg = beautiful.colors.secondary_accent,
     shape = gshape.rounded_bar,
+    visible = false,
     opacity = 0,
     {
       widget = wibox.container.margin,
-      margins = utils:xmargins(4, 4, 8, 7),
+      margins = utils:xmargins(4, 4, 7, 8),
       content_layout,
     },
   })
+
+  local CONTAINER_STATUSES = {
+    Opening = 'Opening',
+    Closing = 'Closing',
+    Idle = 'Idle'
+  }
+
+  container.status = CONTAINER_STATUSES.Idle
 
   container.opacity_animation = animation:new({
     duration = 0.25,
@@ -34,23 +43,26 @@ function music:render()
     update = function(_, pos)
       container.opacity = pos
     end,
+    signals = {
+      ["ended"] = function (_)
+        if container.status == CONTAINER_STATUSES.Closing then
+          container.visible = false
+        end
+        container.status = CONTAINER_STATUSES.Idle
+      end
+    },
   })
 
   function container:hide()
+    container.status = CONTAINER_STATUSES.Closing
     self.opacity_animation:set(0)
   end
 
   function container:show()
+    container.status = CONTAINER_STATUSES.Opening
+    container.visible = true
     self.opacity_animation:set(1)
   end
-
-  content_layout:add(wibox.widget({
-    widget = wibox.widget.textbox,
-    font = beautiful.fonts:choose("icons", 12),
-    markup = "",
-    valign = "center",
-    align = "center",
-  }))
 
   self.raw_music_name = ""
 
@@ -74,7 +86,7 @@ function music:render()
 
   local expandible = wibox.widget({
     widget = wibox.container.margin,
-    left = dpi(1),
+    right = dpi(1),
     {
       id = "background_element",
       widget = wibox.container.background,
@@ -82,7 +94,7 @@ function music:render()
       visible = false,
       {
         widget = wibox.container.margin,
-        left = dpi(2),
+        right = dpi(2),
         {
           widget = wibox.container.scroll.horizontal,
           step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
@@ -126,7 +138,6 @@ function music:render()
   function expandible.animation:reveal()
     expandible.status = ExpandibleStatus.Opening
     expandible.background_element.visible = true
-
     self:set((#cself.raw_music_name < 40 and #cself.raw_music_name or 40) * 6)
   end
 
@@ -145,11 +156,15 @@ function music:render()
 
   content_layout:add(expandible)
 
-  return wibox.widget({
-    widget = wibox.container.margin,
-    margins = dpi(7),
-    container,
-  })
+  content_layout:add(wibox.widget({
+    widget = wibox.widget.textbox,
+    font = beautiful.fonts:choose("icons", 12),
+    markup = "",
+    valign = "center",
+    align = "center",
+  }))
+
+  return container
 end
 
 return oop(music)
