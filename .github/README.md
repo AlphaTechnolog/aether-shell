@@ -89,6 +89,7 @@ sudo systemctl enable --now bluetooth
 ```
 
 > Note that you may also require to setup a picom (fork?)
+> You can find my picom (sdhand fork) [here](../extras/picom/picom.conf)
 
 Now you have to install some fonts.
 
