@@ -9,7 +9,51 @@ local utils = require("framework.utils")()
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
+local Face = require("framework.services.face")
+local face = Face()
+
 local taglist = {}
+
+local function pfp()
+  local container = wibox.widget({
+    widget = wibox.container.background,
+    border_width = dpi(1),
+    border_color = beautiful.colors.light_background_10,
+    shape = gshape.circle,
+    {
+      widget = wibox.widget.imagebox,
+      image = face:fetch(),
+      valign = "center",
+      align = "center",
+      forced_width = dpi(28),
+      forced_height = dpi(28),
+      clip_shape = gshape.circle,
+    },
+  })
+
+  container.animation = animation:new({
+    duration = 0.25,
+    easing = animation.easing.inOutQuad,
+    pos = color.hex_to_rgba(beautiful.colors.light_background_10),
+    update = function(_, pos)
+      container.border_color = color.rgba_to_hex(pos)
+    end,
+  })
+
+  function container.animation:set_color(new_color)
+    self:set({ target = color.hex_to_rgba(new_color) })
+  end
+
+  container:connect_signal("mouse::enter", function()
+    container.animation:set_color(beautiful.colors.light_hovered_black_10)
+  end)
+
+  container:connect_signal("mouse::leave", function()
+    container.animation:set_color(beautiful.colors.light_background_10)
+  end)
+
+  return container
+end
 
 local function mktaglist(s)
   return awful.widget.taglist({
@@ -25,47 +69,17 @@ local function mktaglist(s)
       shape = gshape.squircle,
       {
         widget = wibox.container.margin,
-        margins = utils:xmargins(0, 2, 6, 6),
+        margins = utils:xmargins(4, 4, 8, 8),
         {
-          layout = wibox.layout.align.vertical,
-          nil,
-          {
-            widget = wibox.container.background,
-            {
-              widget = wibox.container.margin,
-              -- fixed margin so no weird behavior when expanding the indicator happens :)
-              margins = utils:xmargins(0, 0, 7, 7),
-              {
-                widget = wibox.container.place,
-                valign = "center",
-                halign = "center",
-                {
-                  id = 'label-element',
-                  widget = wibox.widget.textbox,
-                  valign = 'center',
-                  align = 'center',
-                }
-              },
-            },
-          },
-          {
-            widget = wibox.container.place,
-            valign = "center",
-            halign = "center",
-            {
-              id = "indicator-element",
-              widget = wibox.container.background,
-              bg = beautiful.colors.light_background_15,
-              shape = gshape.rounded_bar,
-              forced_height = dpi(3),
-              forced_width = dpi(15),
-            },
-          },
+          widget = wibox.widget.textbox,
+          id = "label-element",
+          font = beautiful.fonts:choose("icons", 13),
+          valign = "center",
+          align = "center",
         },
       },
       create_callback = function(self, tag)
         local background = self:get_children_by_id("background-element")[1]
-        local indicator = self:get_children_by_id("indicator-element")[1]
         local label_element = self:get_children_by_id("label-element")[1]
 
         background:add_button(utils:left_click(function()
@@ -79,55 +93,119 @@ local function mktaglist(s)
           easing = animation.easing.inOutQuad,
           pos = {
             background = color.hex_to_rgba(beautiful.colors.light_background_3),
-            indicator = color.hex_to_rgba(beautiful.colors.light_background_15),
-            indicator_width = 6,
+            foreground = color.hex_to_rgba(beautiful.colors.foreground),
           },
           update = function(_, pos)
             if pos.background then
               background.bg = color.rgba_to_hex(pos.background)
             end
-            if pos.indicator then
-              indicator.bg = color.rgba_to_hex(pos.indicator)
-            end
-            if pos.indicator_width then
-              indicator.forced_width = dpi(pos.indicator_width)
+            if pos.foreground then
+              background.fg = color.rgba_to_hex(pos.foreground)
             end
           end,
         })
 
+        local State = {
+          ACTIVE = "Active",
+          OCCUPIED = "Occupied",
+          EMPTY = "Empty",
+        }
+
+        -- @default
+        background.state = State.EMPTY
+
         function colors_anim:set_state(new_state)
+          background.state = new_state.id
+
           self:set({
             background = color.hex_to_rgba(new_state.background),
-            indicator = color.hex_to_rgba(new_state.indicator),
-            indicator_width = new_state.indicator_width,
+            foreground = color.hex_to_rgba(new_state.foreground),
           })
         end
 
-        function self:update_label()
-          label_element:set_markup_silently(tostring(tag.index))
-        end
-
-        function self:update()
-          if tag.selected then
+        background:connect_signal("mouse::enter", function()
+          if background.state == State.ACTIVE then
             colors_anim:set_state({
-              background = beautiful.colors.light_background_12,
-              indicator_width = 15,
-              indicator = beautiful.colors.accent,
+              id = State.ACTIVE,
+              background = color.lighten(beautiful.colors.accent, 45),
+              foreground = beautiful.colors.background,
             })
-          elseif #tag:clients() > 0 then
+          elseif background.state == State.OCCUPIED then
             colors_anim:set_state({
-              background = beautiful.colors.light_background_6,
-              indicator_width = 10,
-              indicator = beautiful.colors.light_hovered_black_10,
+              id = State.OCCUPIED,
+              background = beautiful.colors.light_background_7,
+              foreground = beautiful.colors.accent,
             })
           else
             colors_anim:set_state({
-              background = beautiful.colors.light_background_3,
-              indicator_width = 6,
-              indicator = beautiful.colors.light_background_15,
+              id = State.EMPTY,
+              background = beautiful.colors.light_background_4,
+              foreground = beautiful.colors.light_background_15,
             })
           end
+        end)
 
+        background:connect_signal("mouse::leave", function()
+          if background.state == State.ACTIVE then
+            colors_anim:set_state({
+              id = State.ACTIVE,
+              background = beautiful.colors.accent,
+              foreground = beautiful.colors.background,
+            })
+          elseif background.state == State.OCCUPIED then
+            colors_anim:set_state({
+              id = State.OCCUPIED,
+              background = beautiful.colors.background,
+              foreground = beautiful.colors.accent,
+            })
+          else
+            colors_anim:set_state({
+              id = State.EMPTY,
+              background = beautiful.colors.background,
+              foreground = beautiful.colors.light_background_15,
+            })
+          end
+        end)
+
+        function self:update_colors()
+          if tag.selected then
+            colors_anim:set_state({
+              id = State.ACTIVE,
+              background = beautiful.colors.accent,
+              foreground = beautiful.colors.background,
+            })
+          elseif #tag:clients() > 0 then
+            colors_anim:set_state({
+              id = State.OCCUPIED,
+              background = beautiful.colors.background,
+              foreground = beautiful.colors.accent,
+            })
+          else
+            colors_anim:set_state({
+              id = State.EMPTY,
+              background = beautiful.colors.background,
+              foreground = beautiful.colors.light_background_15,
+            })
+          end
+        end
+
+        function self:update_label()
+          local icons = Configuration.GeneralBehavior:get_key("tag_icons")
+          local num_tags = Configuration.GeneralBehavior:get_key("num_tags")
+
+          if #icons ~= num_tags then
+            print("warning: missing icons for tags!")
+            print("assertion `#icons == num_tags` failed")
+            print("filling missing icons with indexes instead")
+          end
+
+          label_element:set_markup_silently(
+            tostring(icons[tag.index] or tag.index)
+          )
+        end
+
+        function self:update()
+          self:update_colors()
           self:update_label()
         end
 
@@ -153,10 +231,11 @@ end
 function taglist:render()
   return wibox.widget({
     widget = wibox.container.margin,
-    margins = dpi(6),
+    margins = utils:xmargins(6, 6, 10, 10),
     {
       layout = wibox.layout.fixed.horizontal,
-      spacing = dpi(6),
+      spacing = dpi(10),
+      pfp(),
       mktaglist(self.s),
     },
   })

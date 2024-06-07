@@ -51,6 +51,7 @@ local DEFAULT_USER_LIKES = {
 
 local DEFAULT_GENERAL_BEHAVIOR = {
   num_tags = 6,
+  tag_icons = { "", "", "", "", "", "" },
   sloppy_focus = true,
 }
 

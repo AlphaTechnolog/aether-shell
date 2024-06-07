@@ -37,6 +37,33 @@ function _utils:xmargins(t, b, l, r)
   }
 end
 
+function _utils:map(tbl, iterator, cb)
+  local result = {}
+
+  for a, b in iterator(tbl) do
+    table.insert(result, cb(a, b))
+  end
+
+  return result
+end
+
+function _utils:filter(tbl, iterator, cb)
+  local result = {}
+
+  for a, b in iterator(tbl) do
+    if cb(a, b) then
+      table.insert(result, iterator == pairs and { [a] = b } or b)
+    end
+  end
+
+  return result
+end
+
+function _utils:find(tbl, iterator, cb)
+  local ret = self:filter(tbl, iterator, cb)
+  return #ret == 0 and nil or ret[1]
+end
+
 function _utils:mapped_range(x, y, mapper)
   local orig = self:range(x, y)
   local ret = {}

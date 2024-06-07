@@ -50,7 +50,7 @@ local function clock()
 
   return wibox.widget({
     widget = wibox.container.background,
-    bg = beautiful.colors.light_background_5,
+    bg = beautiful.colors.light_background_8,
     shape = gshape.rounded_rect,
     {
       widget = wibox.container.margin,
@@ -95,7 +95,7 @@ end
 local function contained(children)
   return wibox.widget({
     widget = wibox.container.margin,
-    margins = dpi(7),
+    margins = utils:xmargins(7, 7, 10, 10),
     children,
   })
 end
@@ -105,16 +105,17 @@ function statusbar:render()
     layout = wibox.layout.fixed.horizontal,
     spacing = dpi(6),
     {
-      widget = wibox.container.margin,
-      {
-        layout = wibox.layout.fixed.horizontal,
-        spacing = dpi(8),
-        Network():render(),
-        Volume():render(),
-        Music():render(),
-      },
+      layout = wibox.layout.fixed.horizontal,
+      spacing = dpi(8),
+      Network():render(),
+      Volume():render(),
+      Music():render(),
     },
-    clock(),
+    {
+      widget = wibox.container.margin,
+      right = beautiful.scheme == "dark" and dpi(5) or dpi(0),
+      clock(),
+    },
     layoutbox(self),
   }))
 end
