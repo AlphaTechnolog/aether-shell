@@ -88,6 +88,8 @@ sudo systemctl enable --now NetworkManager
 sudo systemctl enable --now bluetooth
 ```
 
+> Note that you may also require to setup a picom (fork?)
+
 Now you have to install some fonts.
 
 - [Inter](https://fonts.google.com/specimen/Roboto)
