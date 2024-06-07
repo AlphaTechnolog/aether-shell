@@ -29,7 +29,7 @@ Screen.connect_signal("request::wallpaper", function(s)
         {
           widget = wibox.container.background,
           border_width = dpi(1),
-          border_color = beautiful.colors.light_background_10,
+          border_color = beautiful.colors.light_background_15,
           shape = shape,
           {
             widget = wibox.widget.imagebox,
