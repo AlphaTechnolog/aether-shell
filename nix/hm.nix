@@ -87,18 +87,23 @@ in {
                   options = {
                     filename = strtype user-likes.wallpaper.filename;
 
-                    rounded_corners = types.submoduleWith {
-                      modules = [{
-                        options = let
-                          inherit (user-likes.wallpaper) rounded_corners;
-                        in {
-                          top_left = booltype rounded_corners.top_left;
-                          top_right = booltype rounded_corners.top_right;
-                          bottom_left = booltype rounded_corners.bottom_left;
-                          bottom_right = booltype rounded_corners.bottom_right;
-                          roundness = inttype rounded_corners.roundness;
-                        };
-                      }];
+                    rounded_corners = mkOption rec {
+                      default = user-likes.wallpaper.rounded_corners;
+                      example = default;
+
+                      type = types.submoduleWith {
+                        modules = [{
+                          options = let
+                            inherit (user-likes.wallpaper) rounded_corners;
+                          in {
+                            top_left = booltype rounded_corners.top_left;
+                            top_right = booltype rounded_corners.top_right;
+                            bottom_left = booltype rounded_corners.bottom_left;
+                            bottom_right = booltype rounded_corners.bottom_right;
+                            roundness = inttype rounded_corners.roundness;
+                          };
+                        }];
+                      };
                     };
                   };
                 }];
