@@ -54,7 +54,7 @@ in {
       };
     };
 
-    user-likes = mkOption rec (let
+    user-likes = mkOption (let
       optgenerator = type: default: mkOption rec {
         inherit type default;
         example = default;
@@ -65,7 +65,7 @@ in {
       inttype = optgenerator types.int;
 
       inherit (defaultConfiguration) user-likes;
-    in {
+    in rec {
       default = user-likes;
       example = default;
 
