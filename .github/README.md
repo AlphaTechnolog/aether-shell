@@ -93,7 +93,7 @@ sudo systemctl enable --now bluetooth
 
 Now you have to install some fonts.
 
-- [Inter](https://fonts.google.com/specimen/Roboto)
+- [Roboto](https://fonts.google.com/specimen/Roboto)
 - [Material Symbols](https://downgit.evecalm.com/#/home?url=https://github.com/google/material-design-icons/tree/1ea21d5429750938f4a8e694e75a54fc0f02dae1/variablefont)
 
 > Note that material symbols has a very specific commit, which is the tested one, keep in mind that updating it may end with aether shell displaying weird symbols
