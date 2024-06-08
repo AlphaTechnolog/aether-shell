@@ -85,7 +85,7 @@ in {
               type = types.submoduleWith {
                 modules = [{
                   options = {
-                    filename = strtype user-likes.wallpaper.filename;
+                    filename = optgenerator (types.either types.str types.path) ../assets/wallpaper.png;
 
                     rounded_corners = mkOption rec {
                       default = user-likes.wallpaper.rounded_corners;
