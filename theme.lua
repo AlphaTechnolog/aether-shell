@@ -17,7 +17,9 @@ local icons_path = assets_path .. "icons/"
 local theme = {}
 
 -- distro icon
-theme.distro = icons_path .. io.popen("sh -c '. /etc/os-release; echo $ID'"):read "*l" .. ".svg"
+theme.distro = icons_path
+  .. io.popen("sh -c '. /etc/os-release; echo $ID'"):read("*l")
+  .. ".svg"
 
 theme.default_distro = icons_path .. "awesome.svg"
 
@@ -52,14 +54,12 @@ theme.font = theme.fonts:choose("normal", 9)
 -- | (__/ _ \ / _ \ '_(_-<
 -- \___\___/_\___/_| /__/
 
-local user_likes = Configuration.UserLikes or {};
+local user_likes = Configuration.UserLikes or {}
 
 theme.scheme = user_likes.theme.scheme
 
-theme.colors = palette:generate_shades(
-  user_likes.theme.scheme,
-  user_likes.theme.colors
-)
+theme.colors =
+  palette:generate_shades(user_likes.theme.scheme, user_likes.theme.colors)
 
 -- transparent bg
 theme.colors.transparent = theme.colors.background .. "00"
@@ -67,8 +67,8 @@ theme.colors.transparent = theme.colors.background .. "00"
 -- accent color
 function theme.colors:apply_shade(key)
   return {
-    regular = self[key] .. '1A',
-    bright = self[key] .. '33'
+    regular = self[key] .. "1A",
+    bright = self[key] .. "33",
   }
 end
 

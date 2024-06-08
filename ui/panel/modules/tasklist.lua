@@ -20,29 +20,28 @@ local function Launcher()
       {
         widget = wibox.widget.imagebox,
         image = beautiful.distro,
-        valign = 'center',
-        halign = 'center',
+        valign = "center",
+        halign = "center",
         forced_width = dpi(20),
         forced_height = dpi(20),
 
         -- circled for awesomewm icon idk
         clip_shape = (
-          beautiful:non_supported_distro_icon()
-            and gshape.circle
-            or nil
+          beautiful:non_supported_distro_icon() and gshape.circle
+          or nil
         ),
-      }
-    }
+      },
+    },
   }))
 
   container:setup_hover({
     colors = {
       normal = beautiful.colors.background,
-      hovered = beautiful.colors.light_background_5
+      hovered = beautiful.colors.light_background_5,
     },
   })
 
-  container:add_button(awful.button({}, 1, function ()
+  container:add_button(awful.button({}, 1, function()
     require("naughty").notify({ title = "todo" })
   end))
 
@@ -60,7 +59,7 @@ function Tasklist:render()
   return wibox.widget({
     widget = wibox.container.margin,
     margins = utils:xmargins(2, 2, 0, 0),
-    content_layout
+    content_layout,
   })
 end
 

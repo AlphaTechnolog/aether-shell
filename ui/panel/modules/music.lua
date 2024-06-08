@@ -29,9 +29,9 @@ function music:render()
   })
 
   local CONTAINER_STATUSES = {
-    Opening = 'Opening',
-    Closing = 'Closing',
-    Idle = 'Idle'
+    Opening = "Opening",
+    Closing = "Closing",
+    Idle = "Idle",
   }
 
   container.status = CONTAINER_STATUSES.Idle
@@ -44,12 +44,12 @@ function music:render()
       container.opacity = pos
     end,
     signals = {
-      ["ended"] = function (_)
+      ["ended"] = function(_)
         if container.status == CONTAINER_STATUSES.Closing then
           container.visible = false
         end
         container.status = CONTAINER_STATUSES.Idle
-      end
+      end,
     },
   })
 

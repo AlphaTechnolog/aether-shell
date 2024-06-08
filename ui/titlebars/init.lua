@@ -21,14 +21,14 @@ function _button:_apply_animation(btn)
     duration = 0.25,
     easing = animation.easing.inOutQuad,
     pos = color.hex_to_rgba(self.color),
-    update = function (_, pos)
+    update = function(_, pos)
       btn.bg = color.rgba_to_hex(pos)
-    end
+    end,
   })
 
   function btn.color_animation:set_color(new_color)
     self:set({
-      target = color.hex_to_rgba(new_color)
+      target = color.hex_to_rgba(new_color),
     })
   end
 end
@@ -44,19 +44,19 @@ function _button:_create_widget()
 
   self:_apply_animation(btn)
 
-  btn:connect_signal("mouse::enter", function (_)
+  btn:connect_signal("mouse::enter", function(_)
     btn.color_animation:set_color(color.darken(self.color, 75))
   end)
 
-  btn:connect_signal("mouse::leave", function (_)
+  btn:connect_signal("mouse::leave", function(_)
     btn.color_animation:set_color(self.color)
   end)
 
-  btn:add_button(awful.button({}, 1, function ()
+  btn:add_button(awful.button({}, 1, function()
     self:emit_signal("click")
   end))
 
-  self.c:connect_signal("property::active", function (_)
+  self.c:connect_signal("property::active", function(_)
     if self.c.active then
       btn.color_animation:set_color(self.color)
     else
@@ -87,45 +87,43 @@ Client.connect_signal("request::titlebars", function(c)
   local buttons_layout = wibox.widget({
     layout = wibox.layout.fixed.vertical,
     spacing = dpi(5),
-    halign = 'center',
-    valign = 'center',
+    halign = "center",
+    valign = "center",
   })
 
   local close_button = Button(beautiful.colors.red, c)
   local maximize_button = Button(beautiful.colors.yellow, c)
   local minimize_button = Button(beautiful.colors.green, c)
 
-  close_button:connect_signal("click", function (_)
+  close_button:connect_signal("click", function(_)
     c:kill()
   end)
 
-  maximize_button:connect_signal("click", function (_)
+  maximize_button:connect_signal("click", function(_)
     c.maximized = not c.maximized
   end)
 
-  minimize_button:connect_signal("click", function (_)
-    gtimer.delayed_call(function ()
+  minimize_button:connect_signal("click", function(_)
+    gtimer.delayed_call(function()
       c.minimized = not c.minimized
     end)
   end)
 
-  for _, x in ipairs { close_button, maximize_button, minimize_button } do
+  for _, x in ipairs({ close_button, maximize_button, minimize_button }) do
     buttons_layout:add(x:render())
   end
 
   local widget = wibox.widget({
     widget = wibox.container.background,
 
-    get_border = function (self)
+    get_border = function(self)
       return self:get_children_by_id("border")[1]
     end,
 
-    set_color = function (self, new_color)
+    set_color = function(self, new_color)
       self.bg = new_color
 
-      self.border.bg = utils:color_adaptive_shade(
-        new_color, 5
-      )
+      self.border.bg = utils:color_adaptive_shade(new_color, 5)
     end,
 
     {
@@ -141,7 +139,7 @@ Client.connect_signal("request::titlebars", function(c)
         widget = wibox.container.background,
         forced_width = 1,
       },
-    }
+    },
   })
 
   local DEFAULT_COLOR = beautiful.colors.background
@@ -152,18 +150,18 @@ Client.connect_signal("request::titlebars", function(c)
     duration = 0.15,
     easing = animation.easing.inOutQuad,
     pos = color.hex_to_rgba(DEFAULT_COLOR),
-    update = function (_, pos)
+    update = function(_, pos)
       widget.color = color.rgba_to_hex(pos)
-    end
+    end,
   })
 
   function widget.color_animation:set_color(new_color)
     self:set({
-      target = color.hex_to_rgba(new_color)
+      target = color.hex_to_rgba(new_color),
     })
   end
 
-  c:connect_signal("property::active", function (_)
+  c:connect_signal("property::active", function(_)
     widget.color_animation:set_color(
       beautiful.colors[c.active and "light_background_1" or "background"]
     )
@@ -172,6 +170,6 @@ Client.connect_signal("request::titlebars", function(c)
   -- wrapping in a wibox.container.background for a reason :D
   titlebar:setup({
     widget = wibox.container.background,
-    widget
+    widget,
   })
 end)

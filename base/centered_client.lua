@@ -7,7 +7,7 @@ Client.connect_signal("request::manage", function(client)
   then
     awful.placement.centered(client, {
       honor_workarea = true,
-      honor_padding = true
+      honor_padding = true,
     })
   end
 end)
