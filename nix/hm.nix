@@ -209,6 +209,8 @@ in {
     home.packages = with pkgs; [
       roboto
       material-symbols
+      playerctl
+      upower
     ];
   };
 }
