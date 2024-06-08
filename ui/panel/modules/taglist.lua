@@ -114,6 +114,13 @@ local function mktaglist(s)
         -- @default
         background.state = State.EMPTY
 
+        -- check if the background is a good foreground for the accent color. Specially
+        -- useful for light themes with light accent colors.
+        local active_foreground = color.is_contrast_acceptable(
+          beautiful.colors.background,
+          beautiful.colors.accent
+        ) and beautiful.colors.background or beautiful.colors.foreground
+
         function colors_anim:set_state(new_state)
           background.state = new_state.id
 
@@ -128,7 +135,7 @@ local function mktaglist(s)
             colors_anim:set_state({
               id = State.ACTIVE,
               background = color.lighten(beautiful.colors.accent, 45),
-              foreground = beautiful.colors.background,
+              foreground = active_foreground,
             })
           elseif background.state == State.OCCUPIED then
             colors_anim:set_state({
@@ -150,7 +157,7 @@ local function mktaglist(s)
             colors_anim:set_state({
               id = State.ACTIVE,
               background = beautiful.colors.accent,
-              foreground = beautiful.colors.background,
+              foreground = active_foreground,
             })
           elseif background.state == State.OCCUPIED then
             colors_anim:set_state({
@@ -172,7 +179,7 @@ local function mktaglist(s)
             colors_anim:set_state({
               id = State.ACTIVE,
               background = beautiful.colors.accent,
-              foreground = beautiful.colors.background,
+              foreground = active_foreground,
             })
           elseif #tag:clients() > 0 then
             colors_anim:set_state({
