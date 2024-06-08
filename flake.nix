@@ -13,9 +13,9 @@
       overlays = import ./nix/overlays.nix;
     };
   in {
-    homeManagerModules.${system} = {
+    homeManagerModules = {
       aetherShell = import ./nix/hm.nix {inherit pkgs;};
-      default = self.homeManagerModules.${system}.aetherShell;
+      default = self.homeManagerModules.aetherShell;
     };
   };
 }
