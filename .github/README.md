@@ -128,6 +128,126 @@ startx
 
 And you should start seeing aether shell running.
 
+## NixOS integration
+
+[nixmoment](https://github.com/alphatechnolog/nixmoment) is a very practical example
+on how to install aether shell in nixos, but here's a little resume on how to install
+it if you don't wanna read too much code.
+
+1. Installation of AwesomeWM git
+
+Since aether shell requires awesomewm git, we should figure out a way to install
+AwesomeWM git with NixOS, and for that, you can try using the
+[nixpkgs-f2k](https://github.com/moni-dz/nixpkgs-f2k) repository. So first include
+it like this in your flake.nix
+
+> In these code examples, we're assumming you're putting your inputs in a specialAttrs value
+> and that you also know where to put these codes.
+
+```nix
+{
+    inputs = {
+        nixpkgs-f2k.url = "github:moni-dz/nixpkgs-f2k";
+    };
+}
+```
+
+And then load the awesomewm overlay
+
+```nix
+{inputs, ...}: {
+    nixpkgs.overlays = [
+        (final: _: let
+            inherit (final) system;
+            inherit (inputs) nixpkgs-f2k;
+        in
+            with nixpkgs-f2k.packages.${system}; {
+                awesome = awesome-luajit-git;
+            }
+        )
+    ];
+}
+```
+
+So after that you could just install it through the regular
+windowmanager options.
+
+```nix
+{ lib, pkgs, ... }: {
+    services.xserver = {
+        enable = true;
+
+        windowManager.awesome = {
+            enable = true;
+
+            luaModules = lib.attrValues {
+                inherit (pkgs.luaPackages)
+                    lgi
+                    ldbus
+                    luadbi-mysql
+                    luaposix
+                ;
+            };
+        };
+    };
+}
+```
+
+And with that, Awesome Git with luajit support should be installed
+successfully after a rebuild.
+
+2. Install aether shell via its flake
+
+Add aether shell as one of your inputs
+
+```nix
+{
+    inputs = {
+        nixpkgs-f2k.url = "github:moni-dz/nixpkgs-f2k";
+        aether-shell.url = "github:alphatechnolog/aether-shell";
+    };
+}
+```
+
+Now, include the home manager module in your home manager configuration
+
+```nix
+{ inputs, ... }: {
+    imports = with inputs; [
+        aether-shell.homeManagerModules.aetherShell
+    ];
+}
+```
+
+Then, you can just configure aether shell using the hm module properties.
+
+```nix
+{
+    programs.aetherShell = {
+        enable = true;
+
+        autostart = [
+            "bash -c 'pgrep -x picom || picom -b'"
+        ];
+
+        user-likes = {
+            wallpaper.filename = ./wallpaper.png;
+            wallpaper.rounded_corners.roundness = 0;
+            colors.background = "#000000";
+        };
+    };
+}
+```
+
+> Ignored values are kept as the default ones, even wallpaper
+
+> [!TIP]
+> You can use all the options defined in [manager.lua](../framework/configuration/manager.lua)
+> in the nix module, im trying my best to keep this up to date!
+
+After a rebuild, the home manager module, should install the needed fonts
+and the config with your tweaks.
+
 ## What's next?
 
 Welp, documentation is still not ready, and not done whatsoever, so
