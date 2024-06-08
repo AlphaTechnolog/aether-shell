@@ -65,6 +65,8 @@ local function mktaglist(s)
     },
     widget_template = {
       id = "background-element",
+      bg = beautiful.colors.background,
+      fg = beautiful.colors.light_background_15,
       widget = wibox.container.background,
       shape = gshape.squircle,
       {
@@ -92,8 +94,8 @@ local function mktaglist(s)
           duration = 0.25,
           easing = animation.easing.inOutQuad,
           pos = {
-            background = color.hex_to_rgba(beautiful.colors.light_background_3),
-            foreground = color.hex_to_rgba(beautiful.colors.foreground),
+            background = color.hex_to_rgba(beautiful.colors.background),
+            foreground = color.hex_to_rgba(beautiful.colors.light_background_15),
           },
           update = function(_, pos)
             if pos.background then
@@ -114,13 +116,6 @@ local function mktaglist(s)
         -- @default
         background.state = State.EMPTY
 
-        -- check if the background is a good foreground for the accent color. Specially
-        -- useful for light themes with light accent colors.
-        local active_foreground = color.is_contrast_acceptable(
-          beautiful.colors.background,
-          beautiful.colors.accent
-        ) and beautiful.colors.background or beautiful.colors.foreground
-
         function colors_anim:set_state(new_state)
           background.state = new_state.id
 
@@ -135,7 +130,7 @@ local function mktaglist(s)
             colors_anim:set_state({
               id = State.ACTIVE,
               background = color.lighten(beautiful.colors.accent, 45),
-              foreground = active_foreground,
+              foreground = beautiful.colors.accent_foreshade,
             })
           elseif background.state == State.OCCUPIED then
             colors_anim:set_state({
@@ -157,7 +152,7 @@ local function mktaglist(s)
             colors_anim:set_state({
               id = State.ACTIVE,
               background = beautiful.colors.accent,
-              foreground = active_foreground,
+              foreground = beautiful.colors.accent_foreshade,
             })
           elseif background.state == State.OCCUPIED then
             colors_anim:set_state({
@@ -179,7 +174,7 @@ local function mktaglist(s)
             colors_anim:set_state({
               id = State.ACTIVE,
               background = beautiful.colors.accent,
-              foreground = active_foreground,
+              foreground = beautiful.colors.accent_foreshade,
             })
           elseif #tag:clients() > 0 then
             colors_anim:set_state({

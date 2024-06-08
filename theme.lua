@@ -6,6 +6,7 @@
 
 local xresources = require("beautiful.xresources")
 local gfs = require("gears.filesystem")
+local color = require("framework.color")
 local palette = require("framework.palette")()
 local dpi = xresources.apply_dpi
 
@@ -79,6 +80,12 @@ local accent_shade = theme.colors:apply_shade("accent")
 
 theme.colors.accent_shade = accent_shade.regular
 theme.colors.light_accent_shade = accent_shade.bright
+
+-- contrast acceptable background/foreground shade over accent
+theme.colors.accent_foreshade = color.is_contrast_acceptable(
+  theme.colors.background,
+  theme.colors.accent
+) and theme.colors.foreground or theme.colors.background
 
 theme.bg_normal = theme.colors.background
 theme.fg_normal = theme.colors.foreground
