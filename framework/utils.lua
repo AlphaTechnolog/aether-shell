@@ -135,4 +135,9 @@ function _utils:color_adaptive_shade(hex_color, amount)
   end
 end
 
+function _utils:capitalize(text)
+  if text == nil then return end
+  return string.upper(string.sub(text, 1, 1)) .. string.lower(string.sub(text, 2))
+end
+
 return oop(_utils)

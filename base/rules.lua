@@ -57,7 +57,9 @@ ruled.notification.connect_signal("request::rules", function()
     rule = {},
     properties = {
       screen = awful.screen.preferred,
+      position = "bottom_right",
       implicit_timeout = 5,
+      resident = true,
     },
   })
 end)
