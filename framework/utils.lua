@@ -1,9 +1,12 @@
+local wibox = require("wibox")
 local awful = require("awful")
 local gshape = require("gears.shape")
 local oop = require("framework.oop")
 local color = require("framework.color")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
+
+local Meta = require("meta")
 
 local _utils = {}
 
@@ -138,6 +141,57 @@ end
 function _utils:capitalize(text)
   if text == nil then return end
   return string.upper(string.sub(text, 1, 1)) .. string.lower(string.sub(text, 2))
+end
+
+function _utils:debug_print(text)
+  local debug_file = os.getenv("HOME") .. "/.cache/" .. Meta.Project.id .. "/log.txt"
+  local file = io.open(debug_file, "a+")
+
+  if file == nil then
+    return false
+  end
+
+  file:write(text .. '\n')
+  file:close()
+
+  return true
+end
+
+function _utils:xdebug_print(txt)
+  if not self:debug_print(txt) then
+    error("unable to write in the debugging buffer! unexpected error occurred")
+  end
+end
+
+function _utils:build_markup(opts)
+  local styles = {["bold"] = "b", ["italic"] = "i", ["underline"] = "u"}
+  local text = opts.markup or ""
+  local result = ""
+
+  for style, tag in pairs(styles) do
+    if opts[style] then
+      result = result .. "<" .. tag .. ">"
+    end
+  end
+
+  result = result .. tostring(text)
+
+  for style, tag in pairs(styles) do
+    if opts[style] then
+      result = result .. "</" .. tag .. ">"
+    end
+  end
+
+  return result
+end
+
+function _utils:scrollable(text)
+  return wibox.widget({
+    widget = wibox.container.scroll.horizontal,
+    step_function = wibox.container.scroll.step_functions.waiting_nonlinear_back_and_forth,
+    speed = 60,
+    text
+  })
 end
 
 return oop(_utils)

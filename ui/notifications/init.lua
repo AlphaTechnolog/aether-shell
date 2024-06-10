@@ -12,6 +12,33 @@ local dpi = beautiful.xresources.apply_dpi
 local function create_notification(n)
   n:set_timeout(999999)
 
+  local app_icon = wibox.widget({
+    widget = wibox.widget.imagebox,
+    halign = "center",
+    valign = "center",
+    forced_width = dpi(24),
+    forced_height = dpi(24),
+    clip_shape = utils:srounded(dpi(10)),
+    image = n.app_icon
+  })
+
+  local icon = wibox.widget({
+    widget = wibox.widget.imagebox,
+    forced_width = dpi(48),
+    forced_height = dpi(48),
+    halign = "center",
+    valign = "center",
+    clip_shape = utils:srounded(dpi(12)),
+    image = n.icon,
+  })
+
+  local app_name = wibox.widget({
+    widget = wibox.widget.textbox,
+    markup = utils:capitalize(n.app_name or "Unknown"),
+    valign = "center",
+    align = "center",
+  })
+
   local dismiss = hoverable(wibox.widget({
     widget = wibox.container.background,
     bg = beautiful.colors.background,
@@ -46,7 +73,7 @@ local function create_notification(n)
     value = 0,
     thickness = dpi(3),
     rounded_edge = true,
-    bg = beautiful.colors.light_black_15,
+    bg = beautiful.colors.light_background_12,
     colors = { beautiful.colors.accent },
     dismiss
   })
@@ -61,6 +88,66 @@ local function create_notification(n)
       close_button.value = pos
     end
   })
+
+  local title = utils:scrollable(wibox.widget({
+    widget = wibox.widget.textbox,
+    visible = n.title ~= nil and n.title ~= "",
+    font = beautiful.fonts:choose("normal", 16),
+    valign = "center",
+    align = "left",
+    markup = utils:build_markup({
+      bold = true,
+      markup = n.title
+    }),
+  }))
+
+  local body = utils:scrollable(wibox.widget({
+    widget = wibox.widget.textbox,
+    visible = n.text ~= nil and n.text ~= "",
+    markup = n.text,
+    valign = "center",
+    align = "left",
+  }))
+
+  local actions = wibox.widget({
+    layout = wibox.layout.flex.horizontal,
+    spacing = dpi(7),
+  })
+
+  for _, action in ipairs(n.actions) do
+    local button = hoverable(wibox.widget({
+      widget = wibox.container.background,
+      bg = beautiful.colors.light_background_7,
+      shape = utils:srounded(dpi(7)),
+      border_width = dpi(1),
+      border_color = beautiful.colors.light_background_15,
+      {
+        widget = wibox.container.margin,
+        margins = utils:xmargins(6, 6, 10, 10),
+        {
+          widget = wibox.widget.textbox,
+          markup = action.name,
+          valign = "center",
+          align = "center",
+        }
+      }
+    }))
+
+    button:setup_hover({
+      colors = {
+        normal = beautiful.colors.light_background_7,
+        hovered = beautiful.colors.light_background_12
+      }
+    })
+
+    button:add_button(utils:left_click(function ()
+      gtimer.delayed_call(function ()
+        action:invoke()
+      end)
+    end))
+
+    actions:add(button)
+  end
 
   local notif_widget = naughty.layout.box({
     notification = n,
@@ -79,82 +166,71 @@ local function create_notification(n)
         widget = wibox.container.background,
         bg = beautiful.colors.background,
         border_width = dpi(1),
-        border_color = beautiful.colors.light_black_15,
+        border_color = beautiful.colors.light_background_12,
         shape = utils:srounded(dpi(6)),
         {
-          widget = wibox.container.background,
-          bg = beautiful.colors.background,
-          border_width = dpi(1),
-          border_color = beautiful.colors.light_black_15,
+          layout = wibox.layout.align.vertical,
           {
             layout = wibox.layout.align.vertical,
+            nil,
             {
-              layout = wibox.layout.align.vertical,
-              nil,
+              widget = wibox.container.margin,
+              margins = utils:xmargins(8, 8, 10, 10),
               {
-                widget = wibox.container.margin,
-                margins = utils:xmargins(4, 4, 8, 8),
+                widget = wibox.layout.align.horizontal,
                 {
-                  widget = wibox.layout.align.horizontal,
-                  {
-                    layout = wibox.layout.fixed.horizontal,
-                    spacing = dpi(2),
-                    {
-                      widget = wibox.widget.imagebox,
-                      image = n.app_icon,
-                      clip_shape = gshape.circle,
-                      valign = "center",
-                      halign = "center",
-                      forced_width = dpi(32),
-                      forced_height = dpi(32),
-                      visible = n.app_icon ~= nil
-                    },
-                    {
-                      widget = wibox.widget.textbox,
-                      markup = utils:capitalize(n.app_name or 'Unknown'),
-                      align = "center",
-                      valign = "center",
-                      visible = n.app_name ~= nil,
-                    }
-                  },
-                  nil,
-                  {
-                    widget = wibox.container.margin,
-                    left = dpi(10),
-                    close_button
-                  }
+                  layout = wibox.layout.fixed.horizontal,
+                  spacing = dpi(4),
+                  app_icon,
+                  app_name,
+                },
+                nil,
+                {
+                  widget = wibox.container.margin,
+                  left = dpi(10),
+                  close_button
                 }
-              },
-              {
-                widget = wibox.container.background,
-                bg = beautiful.colors.light_background_12,
-                forced_height = dpi(1),
               }
+            },
+            {
+              widget = wibox.container.background,
+              bg = beautiful.colors.light_background_12,
+              forced_height = dpi(1),
             }
           },
           {
             widget = wibox.container.margin,
-            margins = utils:xmargins(6, 6, 10, 10),
+            margins = dpi(12),
             {
-              layout = wibox.layout.fixed.vertical,
-              spacing = dpi(4),
+              layout = wibox.layout.align.horizontal,
+              icon,
               {
-                widget = wibox.widget.textbox,
-                visible = n.title ~= nil,
-                markup = n.title,
-                valign = 'center',
-                align = 'center',
-              },
-              {
-                widget = wibox.widget.textbox,
-                visible = n.text ~= nil,
-                markup = n.text,
-                valign = 'center',
-                align = 'center',
+                widget = wibox.container.margin,
+                left = dpi(10),
+                {
+                  widget = wibox.layout.align.vertical,
+                  nil,
+                  {
+                    widget = wibox.container.place,
+                    valign = "center",
+                    halign = "left",
+                    {
+                      layout = wibox.layout.fixed.vertical,
+                      spacing = dpi(2),
+                      title,
+                      body
+                    }
+                  },
+                  {
+                    widget = wibox.container.margin,
+                    top = dpi(12),
+                    actions,
+                  },
+                }
               }
             }
           }
-        }
+        },
       }
     },
   })
@@ -179,7 +255,11 @@ local function create_notification(n)
   end)
 end
 
-naughty.connect_signal("added", function (n)
+naughty.connect_signal("added", function(n)
+  if n.title == "" or n.title == nil then
+    n.title = n.app_name
+  end
+
   if type(n._private.app_icon) == "table" then
     n.app_icon = icon_theme:choose_icon(n._private.app_icon)
   else
@@ -191,11 +271,11 @@ naughty.connect_signal("added", function (n)
   end
 
   if n.app_icon == "" or n.app_icon == nil then
-    n.app_icon = icon_theme:get_icon_path("application-default-icon")
+    n.app_icon = icon_theme:get_icon_path "application-default-icon"
   end
 
   if n.icon == "" or n.icon == nil then
-    n.icon = icon_theme:get_icon_path("preferences-desktop-notification-bell")
+    n.icon = icon_theme:get_icon_path "preferences-desktop-notification-bell"
   end
 end)
 
