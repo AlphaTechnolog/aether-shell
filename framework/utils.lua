@@ -185,6 +185,10 @@ function _utils:build_markup(opts)
   return result
 end
 
+function _utils:colorize_markup(markup_color, markup)
+  return "<span foreground='" .. markup_color .. "'>" .. markup .. '</span>'
+end
+
 function _utils:scrollable(text)
   return wibox.widget({
     widget = wibox.container.scroll.horizontal,

@@ -45,6 +45,11 @@ awful.keyboard.append_global_keybindings({
   awful.key({ modkey, "Shift" }, "Return", function()
     awful.spawn("bash -c '" .. launcher .. "'")
   end, { description = "spawn the user launcher", group = "launcher" }),
+
+  awful.key({ modkey }, "a", function ()
+    awful.spawn("bash -c 'maim ~/a.png'")
+  end, { description = "Take a screenshot (dumb)", group = "launcher" }),
+
   awful.key({ modkey }, "d", function()
     local s = awful.screen.focused()
 
