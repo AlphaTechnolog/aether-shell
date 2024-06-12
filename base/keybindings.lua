@@ -47,8 +47,15 @@ awful.keyboard.append_global_keybindings({
   end, { description = "spawn the user launcher", group = "launcher" }),
 
   awful.key({ modkey }, "a", function ()
-    awful.spawn("bash -c 'maim ~/a.png'")
+    awful.spawn("bash -c 'maim | xclip -sel c -t image/png'")
+    require("naughty").notify({ title = "Notification", text = "Full notification copied to the clipboard successfully" })
   end, { description = "Take a screenshot (dumb)", group = "launcher" }),
+
+  awful.key({ modkey, "Shift" }, "a", function ()
+    awful.spawn.easy_async("bash -c 'maim -s | xclip -sel c -t image/png'", function ()
+      require("naughty").notify({ title = "Notification", text = "Ranged notification copied to the clipboard successfully" })
+    end)
+  end, { description = "Take a screenshot with range (dumb)", group = "launcher" }),
 
   awful.key({ modkey }, "d", function()
     local s = awful.screen.focused()
