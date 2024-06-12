@@ -233,7 +233,7 @@ Then, you can just configure aether shell using the hm module properties.
         user-likes = {
             wallpaper.filename = ./wallpaper.png;
             wallpaper.rounded_corners.roundness = 0;
-            colors.background = "#000000";
+            theme.colors.background = "#000000";
         };
     };
 }
