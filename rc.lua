@@ -5,33 +5,19 @@ pcall(require, "luarocks.loader")
 local beautiful = require("beautiful")
 local gfs = require("gears.filesystem")
 local gtimer = require("gears.timer")
-local autostart = require("framework.autostart")()
+local initialisation = require("framework.initialisation")()
 
-local collectgarbage = collectgarbage
-
-collectgarbage("setpause", 110)
-collectgarbage("setstepmul", 1000)
-
-gtimer({
-  timeout = 5,
-  autostart = true,
-  call_now = true,
-  callback = function()
-    collectgarbage("collect")
-  end,
-})
+-- performance improvements
+initialisation:setup_garbage_collector_timer()
 
 require("awful.hotkeys_popup.keys")
 require("awful.autofocus")
 require("framework.configuration.exposer")
 require("framework.globals")
 
-local theme_file = gfs.get_configuration_dir() .. "theme.lua"
-beautiful.init(theme_file)
-
-gtimer.delayed_call(function()
-  autostart:run()
-end)
+-- load theme and autostart before some ui rendering
+initialisation:load_theme()
+initialisation:load_autostart()
 
 require("misc.error-handling")
 require("base")
