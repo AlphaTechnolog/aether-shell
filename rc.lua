@@ -1,10 +1,3 @@
----@diagnostic disable: param-type-mismatch
-
-pcall(require, "luarocks.loader")
-
-local beautiful = require("beautiful")
-local gfs = require("gears.filesystem")
-local gtimer = require("gears.timer")
 local initialisation = require("framework.initialisation")()
 
 -- performance improvements
