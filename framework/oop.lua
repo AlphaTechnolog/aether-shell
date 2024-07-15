@@ -4,27 +4,27 @@ local gobject = require("gears.object")
 local setmetatable = setmetatable
 
 return function(prototype)
-  prototype.mt = {}
+    prototype.mt = {}
 
-  if not prototype.constructor then
-    prototype.constructor = function(_)
-      -- @unimplemented
+    if not prototype.constructor then
+        prototype.constructor = function(_)
+            -- @unimplemented
+        end
     end
-  end
 
-  local function new(...)
-    local ret = gobject({})
-    gtable.crush(ret, prototype, true)
+    local function new(...)
+        local ret = gobject({})
+        gtable.crush(ret, prototype, true)
 
-    ret._private = {}
-    ret:constructor(...)
+        ret._private = {}
+        ret:constructor(...)
 
-    return ret
-  end
+        return ret
+    end
 
-  function prototype.mt:__call(...)
-    return new(...)
-  end
+    function prototype.mt:__call(...)
+        return new(...)
+    end
 
-  return setmetatable(prototype, prototype.mt)
+    return setmetatable(prototype, prototype.mt)
 end

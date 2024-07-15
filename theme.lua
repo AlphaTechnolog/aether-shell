@@ -19,18 +19,18 @@ local theme = {}
 
 -- distro icon
 theme.distro = icons_path
-  .. io.popen("sh -c '. /etc/os-release; echo $ID'"):read("*l")
-  .. ".svg"
+    .. io.popen("sh -c '. /etc/os-release; echo $ID'"):read("*l")
+    .. ".svg"
 
 theme.default_distro = icons_path .. "awesome.svg"
 
 -- generic for non supported (atm) distro.
 if gfs.file_readable(theme.distro) ~= true then
-  theme.distro = theme.default_distro
+    theme.distro = theme.default_distro
 end
 
 function theme:non_supported_distro_icon()
-  return theme.distro == theme.default_distro
+    return theme.distro == theme.default_distro
 end
 
 --    ___                _
@@ -39,13 +39,13 @@ end
 -- |_|\___/_||_\__/__/
 
 theme.fonts = {
-  normal = "Roboto ",
-  icons = "Material Symbols Rounded ",
-  nerdfonts = "Iosevka Nerd Font ",
+    normal = "Roboto ",
+    icons = "Material Symbols Rounded ",
+    nerdfonts = "Iosevka Nerd Font ",
 }
 
 function theme.fonts:choose(family, size)
-  return self[family] .. tostring(size)
+    return self[family] .. tostring(size)
 end
 
 theme.font = theme.fonts:choose("normal", 9)
@@ -60,17 +60,17 @@ local user_likes = Configuration.UserLikes or {}
 theme.scheme = user_likes.theme.scheme
 
 theme.colors =
-  palette:generate_shades(user_likes.theme.scheme, user_likes.theme.colors)
+    palette:generate_shades(user_likes.theme.scheme, user_likes.theme.colors)
 
 -- transparent bg
 theme.colors.transparent = theme.colors.background .. "00"
 
 -- accent color
 function theme.colors:apply_shade(key)
-  return {
-    regular = self[key] .. "1A",
-    bright = self[key] .. "33",
-  }
+    return {
+        regular = self[key] .. "1A",
+        bright = self[key] .. "33",
+    }
 end
 
 theme.colors.accent = theme.colors[user_likes.theme.accents.primary]
@@ -83,8 +83,8 @@ theme.colors.light_accent_shade = accent_shade.bright
 
 -- contrast acceptable background/foreground shade over accent
 theme.colors.accent_foreshade = color.is_contrast_acceptable(
-  theme.colors.background,
-  theme.colors.accent
+    theme.colors.background,
+    theme.colors.accent
 ) and theme.colors.foreground or theme.colors.background
 
 theme.bg_normal = theme.colors.background
@@ -100,9 +100,9 @@ theme.fg_systray = theme.fg_normal
 
 theme.useless_gap = dpi(4)
 theme.border_width = dpi(user_likes.theme.scheme == "light" and 0 or 1)
-theme.border_color_normal = theme.colors.light_black_15
-theme.border_color_active = theme.colors.light_hovered_black_15
-theme.border_color_marked = theme.colors.light_black_15
+theme.border_color_normal = theme.colors.light_black_8
+theme.border_color_active = theme.colors.hovered_black
+theme.border_color_marked = theme.colors.light_black_8
 theme.menu_height = dpi(15)
 theme.menu_width = dpi(100)
 theme.icon_theme = "Papirus-Dark"
