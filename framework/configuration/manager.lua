@@ -37,9 +37,12 @@ local DEFAULT_USER_LIKES = {
             white = "#e0e1e4",
         },
     },
+    panel = {
+        enabled = true,
+    },
     wallpaper = {
         filename = gfs.get_configuration_dir() .. "/assets/wallpaper.png",
-        disable_borders = false,
+        disable_borders = true,
         rounded_corners = {
             roundness = 12,
             top_left = true,
@@ -125,7 +128,7 @@ function _manager:parse(path)
     if not self.fs:isfile(path) then
         error(
             path
-                .. " does not exists, did the caller call scaffold_if_needed()?"
+            .. " does not exists, did the caller call scaffold_if_needed()?"
         )
     end
 

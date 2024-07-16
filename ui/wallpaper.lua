@@ -3,6 +3,7 @@ local gfs = require("gears.filesystem")
 local awful = require("awful")
 local utils = require("framework.utils")()
 local wallpaper = Configuration.UserLikes:get_key("wallpaper")
+local panel = Configuration.UserLikes:get_key("panel")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
@@ -16,6 +17,10 @@ Screen.connect_signal("request::wallpaper", function(s)
         wallpaper.rounded_corners.bottom_left
     )
 
+    local border_width = wallpaper.disable_borders
+        and dpi(0)
+        or beautiful.scheme == "light" and dpi(0) or dpi(1)
+
     awful.wallpaper({
         screen = s,
         widget = {
@@ -24,26 +29,21 @@ Screen.connect_signal("request::wallpaper", function(s)
             valign = "center",
             halign = "center",
             {
-                widget = wibox.container.margin,
-                left = dpi(30),
+                widget = wibox.container.background,
+                border_width = border_width,
+                border_color = beautiful.colors.light_black_15,
+                shape = shape,
                 {
-                    widget = wibox.container.background,
-                    border_width = beautiful.scheme == "light" and dpi(0)
-                        or dpi(1),
-                    border_color = beautiful.colors.light_black_15,
-                    shape = shape,
-                    {
-                        widget = wibox.widget.imagebox,
-                        valign = "center",
-                        halign = "center",
-                        resize = true,
-                        horizontal_fit_policy = true,
-                        vertical_fit_policy = true,
-                        clip_shape = shape,
-                        image = wallpaper.filename
-                            or gfs.get_configuration_dir()
-                                .. "/assets/wallpaper.png",
-                    },
+                    widget = wibox.widget.imagebox,
+                    valign = "center",
+                    halign = "center",
+                    resize = true,
+                    horizontal_fit_policy = true,
+                    vertical_fit_policy = true,
+                    clip_shape = shape,
+                    image = wallpaper.filename
+                        or gfs.get_configuration_dir()
+                        .. "/assets/wallpaper.png",
                 },
             },
         },

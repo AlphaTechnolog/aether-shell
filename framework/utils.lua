@@ -1,6 +1,7 @@
 local wibox = require("wibox")
 local awful = require("awful")
 local gshape = require("gears.shape")
+local gtimer = require("gears.timer")
 local oop = require("framework.oop")
 local color = require("framework.color")
 local beautiful = require("beautiful")
@@ -9,6 +10,10 @@ local dpi = beautiful.xresources.apply_dpi
 local Meta = require("meta")
 
 local _utils = {}
+
+function _utils:delayed(...)
+    return gtimer.delayed_call(...)
+end
 
 function _utils:srounded(fact)
     return function(cr, w, h)

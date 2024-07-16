@@ -98,8 +98,9 @@ theme.fg_systray = theme.fg_normal
 -- | (_ / -_) ' \/ -_) '_/ _` | |
 -- \___\___|_||_\___|_| \__,_|_|
 
-theme.useless_gap = dpi(4)
-theme.border_width = dpi(user_likes.theme.scheme == "light" and 0 or 1)
+theme.useless_gap = dpi(6)
+-- theme.border_width = dpi(user_likes.theme.scheme == "light" and 0 or 1)
+theme.border_width = dpi(0)
 theme.border_color_normal = theme.colors.light_black_8
 theme.border_color_active = theme.colors.hovered_black
 theme.border_color_marked = theme.colors.light_black_8
