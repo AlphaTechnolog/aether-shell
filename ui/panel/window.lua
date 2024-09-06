@@ -6,6 +6,7 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
 local Taglist = require("ui.panel.modules.taglist")
+local Layoutbox = require("ui.panel.modules.layoutbox")
 
 local _window = {}
 
@@ -46,6 +47,15 @@ function _window:make_window()
                         },
                     },
                     nil,
+                    {
+                        widget = wibox.container.margin,
+                        margins = utils:xmargins(8, 8, 0, 10),
+                        {
+                            layout = wibox.layout.fixed.horizontal,
+                            spacing = dpi(10),
+                            Layoutbox(self.s):render(),
+                        }
+                    }
                 },
                 {
                     widget = wibox.container.place,
