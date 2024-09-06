@@ -43,7 +43,6 @@ function _window:make_window()
                         {
                             layout = wibox.layout.fixed.horizontal,
                             spacing = dpi(10),
-                            Taglist(self.s):render()
                         },
                     },
                     nil,
@@ -52,13 +51,8 @@ function _window:make_window()
                     widget = wibox.container.place,
                     valign = "center",
                     halign = "center",
-                    {
-                        widget = wibox.widget.textbox,
-                        markup = "",
-                        valign = "center",
-                        align = "center",
-                    }
-                },
+                    Taglist(self.s):render(),
+                }
             }
         }),
     })
