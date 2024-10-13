@@ -12,7 +12,7 @@ local DEFAULT_CACHED_ICONS = {
 }
 
 local DEFAULT_USER_LIKES = {
-    navigator = "google-chrome",
+    navigator = "firefox",
     terminal = "alacritty",
     explorer = "thunar",
     launcher = "rofi -show drun",
@@ -24,7 +24,7 @@ local DEFAULT_USER_LIKES = {
             secondary = "blue",
         },
         colors = {
-            background = "#161616",
+            background = "#141414",
             foreground = "#c0caf5",
             black = "#181818",
             hovered_black = "#323232",
