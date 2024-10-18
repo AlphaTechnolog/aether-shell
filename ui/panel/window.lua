@@ -4,6 +4,7 @@ local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 local oop = require("framework.oop")
 
+local Launcher = require("ui.panel.components.launcher")
 local Workspaces = require("ui.panel.components.workspaces")
 
 local Window = {
@@ -48,7 +49,15 @@ function Window:make_window()
                     margins = dpi(4),
                     {
                         layout = wibox.layout.align.horizontal,
-                        nil,
+                        {
+                            widget = wibox.container.margin,
+                            right = dpi(4),
+                            {
+                                layout = wibox.layout.fixed.horizontal,
+                                spacing = dpi(4),
+                                Launcher():render(),
+                            }
+                        },
                         Workspaces(self._priv.s):render(),
                     }
                 }
