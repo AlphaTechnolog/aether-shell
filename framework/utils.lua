@@ -181,18 +181,22 @@ function _utils:build_markup(opts)
     local text = opts.markup or ""
     local result = ""
 
-    for style, tag in pairs(styles) do
+    for _, style in ipairs {"bold", "italic", "underline"} do
         if opts[style] then
-            result = result .. "<" .. tag .. ">"
+            result = result .. "<" .. styles[style] .. ">"
         end
     end
 
     result = result .. tostring(text)
 
-    for style, tag in pairs(styles) do
+    for _, style in ipairs {"underline", "italic", "bold"} do
         if opts[style] then
-            result = result .. "</" .. tag .. ">"
+            result = result .. "</" .. styles[style] .. ">"
         end
+    end
+
+    if opts.color ~= nil then
+        result = _utils:colorize_markup(opts.color, result)
     end
 
     return result

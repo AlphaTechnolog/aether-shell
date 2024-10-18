@@ -10,7 +10,7 @@
 
     general-behavior = {
       sloppy_focus = true;
-      tag_icons = [ "" "" "" "" "" "" ];
+      tag_labels = [ "net" "dev" "term" "fs" "music" "chat" ];
       num_tags = 6;
     };
 
@@ -25,14 +25,7 @@
 
       wallpaper = {
         filename = ../assets/wallpaper.png;
-
-        rounded_corners = {
-          top_left = true;
-          top_right = true;
-          bottom_left = true;
-          bottom_right = true;
-          roundness = 12;
-        };
+        enable_default_splash = true;
       };
 
       theme = {

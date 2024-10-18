@@ -1,79 +1,91 @@
 local wibox = require("wibox")
 local awful = require("awful")
-local oop = require("framework.oop")
-local utils = require("framework.utils")()
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
+local oop = require("framework.oop")
 
-local Taglist = require("ui.panel.modules.taglist")
-local Layoutbox = require("ui.panel.modules.layoutbox")
+local Workspaces = require("ui.panel.components.workspaces")
 
-local _window = {}
+local Window = {
+    _priv = { s = nil, popup = nil, },
+}
 
-function _window:constructor(s)
-    self.s = s
+function Window:constructor(s)
+    self._priv.s = s
     self:make_window()
 end
 
-function _window:make_window()
+function Window:make_window()
+    local s = self._priv.s
+
+    -- satisfy lua-lsp
+    if not s or not s.geometry then
+        return
+    end
+
     local height = dpi(40)
 
-    self.popup = awful.popup({
-        type = "dock",
-        visible = false,
-        shape = utils:srounded(dpi(10)),
-        bg = beautiful.colors.transparent,
-        fg = beautiful.colors.foreground,
-        x = self.s.geometry.x + beautiful.useless_gap * 2,
-        y = self.s.geometry.y + beautiful.useless_gap * 2,
-        minimum_width = self.s.geometry.width - beautiful.useless_gap * 4,
-        maximum_width = self.s.geometry.width - beautiful.useless_gap * 4,
+    local popup = awful.popup({
+        screen = self._priv.s,
+        minimum_width = s.geometry.width,
         minimum_height = height,
+        maximum_width = s.geometry.width,
         maximum_height = height,
-        widget = wibox.widget({
-            widget = wibox.container.background,
-            bg = beautiful.colors.background,
-            shape = utils:srounded(dpi(10)),
+        x = s.geometry.x,
+        y = s.geometry.y,
+        bg = beautiful.colors.background,
+        fg = beautiful.colors.foreground,
+        visible = false,
+        widget = {
+            layout = wibox.layout.align.vertical,
+            nil,
             {
-                layout = wibox.layout.stack,
+                widget = wibox.container.background,
+                bg = beautiful.colors.background,
+                fg = beautiful.colors.foreground,
                 {
-                    layout = wibox.layout.align.horizontal,
+                    widget = wibox.container.margin,
+                    margins = dpi(4),
                     {
-                        widget = wibox.container.margin,
-                        margins = utils:xmargins(8, 8, 10, 0),
-                        {
-                            layout = wibox.layout.fixed.horizontal,
-                            spacing = dpi(10),
-                        },
-                    },
-                    nil,
-                    {
-                        widget = wibox.container.margin,
-                        margins = utils:xmargins(8, 8, 0, 10),
-                        {
-                            layout = wibox.layout.fixed.horizontal,
-                            spacing = dpi(10),
-                            Layoutbox(self.s):render(),
-                        }
+                        layout = wibox.layout.align.horizontal,
+                        nil,
+                        Workspaces(self._priv.s):render(),
                     }
-                },
-                {
-                    widget = wibox.container.place,
-                    valign = "center",
-                    halign = "center",
-                    Taglist(self.s):render(),
                 }
+            },
+            {
+                widget = wibox.container.background,
+                bg = beautiful.colors.light_background_2,
+                forced_height = dpi(2),
             }
-        }),
+        }
     })
 
-    self.popup:struts({
-        top = height + beautiful.useless_gap * 2,
-    })
+    function popup:show()
+        self.visible = true
+    end
+
+    function popup:hide()
+        self.visible = false
+    end
+
+    popup:struts {
+        top = height,
+    }
+
+    self._priv.popup = popup
 end
 
-function _window:raise()
-    self.popup.visible = true
+function Window:raise()
+    local popup = self._priv.popup
+
+    if not popup then
+        return
+    end
+
+    if not popup.visible then
+        popup:show()
+    end
 end
 
-return oop(_window)
+return oop(Window)

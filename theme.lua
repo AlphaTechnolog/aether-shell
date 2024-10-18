@@ -39,9 +39,9 @@ end
 -- |_|\___/_||_\__/__/
 
 theme.fonts = {
-    normal = "Roboto ",
+    normal = "BlexMono Nerd Font ",
     icons = "Material Symbols Rounded ",
-    nerdfonts = "Iosevka Nerd Font ",
+    monospace = "BlexMono Nerd Font ",
 }
 
 function theme.fonts:choose(family, size)
@@ -100,10 +100,10 @@ theme.fg_systray = theme.fg_normal
 
 theme.useless_gap = dpi(4)
 -- theme.border_width = dpi(user_likes.theme.scheme == "light" and 0 or 1)
-theme.border_width = dpi(0)
-theme.border_color_normal = theme.colors.light_black_8
-theme.border_color_active = theme.colors.hovered_black
-theme.border_color_marked = theme.colors.light_black_8
+theme.border_width = dpi(2)
+theme.border_color_normal = theme.colors.light_background_2
+theme.border_color_active = theme.colors.light_background_5
+theme.border_color_marked = theme.colors.light_background_2
 theme.menu_height = dpi(15)
 theme.menu_width = dpi(100)
 theme.icon_theme = "Papirus-Dark"

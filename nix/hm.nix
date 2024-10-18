@@ -39,9 +39,9 @@ in {
               example = default;
             };
 
-            tag_icons = mkOption rec {
+            tag_labels = mkOption rec {
               type = types.listOf types.str;
-              default = defaultConfiguration.general-behavior.tag_icons;
+              default = defaultConfiguration.general-behavior.tag_labels;
               example = default;
             };
 
@@ -86,25 +86,7 @@ in {
                 modules = [{
                   options = {
                     filename = optgenerator (types.either types.str types.path) ../assets/wallpaper.png;
-
-                    rounded_corners = mkOption rec {
-                      default = user-likes.wallpaper.rounded_corners;
-                      example = default;
-
-                      type = types.submoduleWith {
-                        modules = [{
-                          options = let
-                            inherit (user-likes.wallpaper) rounded_corners;
-                          in {
-                            top_left = booltype rounded_corners.top_left;
-                            top_right = booltype rounded_corners.top_right;
-                            bottom_left = booltype rounded_corners.bottom_left;
-                            bottom_right = booltype rounded_corners.bottom_right;
-                            roundness = inttype rounded_corners.roundness;
-                          };
-                        }];
-                      };
-                    };
+                    enable_default_splash = booltype true;
                   };
                 }];
               };

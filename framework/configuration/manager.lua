@@ -24,17 +24,16 @@ local DEFAULT_USER_LIKES = {
             secondary = "blue",
         },
         colors = {
-            background = "#141414",
-            foreground = "#ADB3BA",
-            black = "#181818",
-            hovered_black = "#242424",
-            red = "#C7AE95",
-            green = "#95C7AE",
-            yellow = "#AEC795",
-            blue = "#AE95C7",
-            magenta = "#C79595",
-            cyan = "#95AEC7",
-            white = "#DFE2E5",
+            background = "#151515",
+            foreground = "#bdbdbd",
+            black = "#222222",
+            hovered_black = "#333333",
+            red = "#fb4934",
+            yellow = "#fabd2f",
+            blue = "#83a598",
+            magenta = "#d3869b",
+            cyan = "#8ec07c",
+            white = "#d5c4a1"
         },
     },
     panel = {
@@ -42,20 +41,13 @@ local DEFAULT_USER_LIKES = {
     },
     wallpaper = {
         filename = gfs.get_configuration_dir() .. "/assets/wallpaper.png",
-        disable_borders = true,
-        rounded_corners = {
-            roundness = 12,
-            top_left = true,
-            top_right = true,
-            bottom_left = true,
-            bottom_right = true,
-        },
+        enable_default_splash = true,
     },
 }
 
 local DEFAULT_GENERAL_BEHAVIOR = {
     num_tags = 6,
-    tag_icons = { "", "", "", "", "", "" },
+    tag_labels = {"net", "dev", "term", "fs", "music", "chat"},
     sloppy_focus = true,
 }
 

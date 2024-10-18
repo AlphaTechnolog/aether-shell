@@ -2,50 +2,61 @@ local wibox = require("wibox")
 local gfs = require("gears.filesystem")
 local awful = require("awful")
 local utils = require("framework.utils")()
-local wallpaper = Configuration.UserLikes:get_key("wallpaper")
-local panel = Configuration.UserLikes:get_key("panel")
 local beautiful = require("beautiful")
 local dpi = beautiful.xresources.apply_dpi
 
--- TODO: Add support to solid background color only and tile wallpaper
+local wallpaper = Configuration.UserLikes:get_key("wallpaper")
+
 Screen.connect_signal("request::wallpaper", function(s)
-    local shape = utils:prounded(
-        wallpaper.rounded_corners.roundness,
-        wallpaper.rounded_corners.top_left,
-        wallpaper.rounded_corners.top_right,
-        wallpaper.rounded_corners.bottom_right,
-        wallpaper.rounded_corners.bottom_left
-    )
-
-    local border_width = wallpaper.disable_borders
-        and dpi(0)
-        or beautiful.scheme == "light" and dpi(0) or dpi(1)
-
-    awful.wallpaper({
-        screen = s,
-        widget = {
-            widget = wibox.container.background,
-            bg = beautiful.colors.background,
-            valign = "center",
-            halign = "center",
-            {
-                widget = wibox.container.background,
-                border_width = border_width,
-                border_color = beautiful.colors.light_black_15,
-                shape = shape,
-                {
-                    widget = wibox.widget.imagebox,
-                    valign = "center",
-                    halign = "center",
-                    resize = true,
-                    horizontal_fit_policy = true,
-                    vertical_fit_policy = true,
-                    clip_shape = shape,
-                    image = wallpaper.filename
-                        or gfs.get_configuration_dir()
-                        .. "/assets/wallpaper.png",
-                },
-            },
-        },
-    })
+	if wallpaper.enable_default_splash then
+		awful.wallpaper({
+			screen = s,
+			widget = {
+				widget = wibox.container.background,
+				bg = beautiful.colors.dark_background_1,
+				{
+					widget = wibox.container.place,
+					valign = "center",
+					halign = "center",
+					{
+						layout = wibox.layout.fixed.vertical,
+						spacing = dpi(6),
+						{
+							widget = wibox.widget.textbox,
+							markup = "<b>Default splash!</b>",
+							font = beautiful.fonts:choose("monospace", 32),
+							valign = "center",
+							align = "center",
+						},
+						{
+							widget = wibox.widget.textbox,
+							markup = utils:build_markup {
+								markup = "Work in progress",
+								color = beautiful.colors.light_black_15,
+								italic = true,
+							},
+							font = beautiful.fonts:choose("monospace", 14),
+							valign = "center",
+							align = "center",
+						}
+					}
+				},
+			},
+		})
+	else
+		awful.wallpaper({
+			screen = s,
+			widget = {
+				widget = wibox.widget.imagebox,
+				valign = "center",
+				halign = "center",
+				resize = true,
+				horizontal_fit_policy = true,
+				vertical_fit_policy = true,
+				image = wallpaper.filename
+					or gfs.get_configuration_dir()
+					.. "/assets/wallpaper.png",
+			},
+		})
+	end
 end)
