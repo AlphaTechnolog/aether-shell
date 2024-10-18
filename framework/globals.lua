@@ -6,3 +6,4 @@ Awesome = awesome
 Tag = tag
 Client = client
 Screen = screen
+Mouse = mouse

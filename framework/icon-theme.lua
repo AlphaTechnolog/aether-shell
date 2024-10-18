@@ -1,4 +1,5 @@
--- huge thanks to the bling project...
+-- modified version of icon_theme helper from the bling project, this version
+-- applies icon caching in ~/.cache in order to improve performance.
 
 local lgi = require("lgi")
 local Gio = lgi.Gio

@@ -5,6 +5,7 @@ local beautiful = require("beautiful")
 return function(widget)
     function widget:setup_hover(opts)
         self.opts = opts
+
         self.animation = animation:new({
             duration = 0.25,
             easing = animation.easing.inOutQuad,
